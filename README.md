@@ -42,5 +42,5 @@ Players must combat adversaries from other universes to return them to their ori
 ## Credits
 
 - Developed by [Helloworld](https://example.com)(Sacha/Damien/Barthélemy/Yanis/raphael)
-- Sound Design by [Sound Designer Name](Sacha Sitbon and Damien Placé)
+- Sound Design by [Sacha Sitbon and Damien Placé]
 
