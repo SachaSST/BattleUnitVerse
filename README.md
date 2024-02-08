@@ -1,6 +1,6 @@
 # BattleUnitverse
 
-![BattleUnitverse Logo]([https://example.com/battleunitverse_logo.png](https://cdn.discordapp.com/attachments/1178991896631189526/1183195882036932648/Charle_1.png?ex=65d14808&is=65bed308&hm=80e3c7cf8f77a226ccfd7812cf3a15bc3d8f7777f58cff19af7dcff16be927e9&))
+![BattleUnitverse Logo](file:///Users/sachasitbon/Desktop/Home:/B-U-V%20Project/assets/logobuvvvvv.png)
 
 ## Overview
 
@@ -26,16 +26,16 @@ Players must combat adversaries from other universes to return them to their ori
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/yourusername/BattleUnitverse.git`
+1. Clone the repository: `git clone https://github.com/SachaSST/BattleUnitVerse.git`
 2. Navigate to the game directory: `cd BattleUnitverse`
 3. Run the game executable: `./battleunitverse`
 
 ## Controls
 
-- **Movement**: Arrow keys or WASD
+- **Movement**: Arrow keys or ZQSD
 - **Jump**: Spacebar
 - **Double Jump**: Press Jump key twice
-- **Deploy Wall**: Q
+- **Deploy Wall**: C
 - **Deploy Platform**: E
 - **Throw Flash Bomb**: F
 
