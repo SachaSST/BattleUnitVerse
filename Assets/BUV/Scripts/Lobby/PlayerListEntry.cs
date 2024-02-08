@@ -15,10 +15,11 @@ using ExitGames.Client.Photon;
 using Photon.Realtime;
 using Photon.Pun.UtilityScripts;
 using Photon.Pun;
+using TMPro;
     public class PlayerListEntry : MonoBehaviour
     {
         [Header("UI References")]
-        public Text PlayerNameText;
+        public TextMeshProUGUI PlayerNameText;
 
         public Image PlayerColorImage;
         public Button PlayerReadyButton;
@@ -90,7 +91,7 @@ using Photon.Pun;
 
         public void SetPlayerReady(bool playerReady)
         {
-            PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Ready!" : "Ready?";
-            PlayerReadyImage.enabled = playerReady;
+        PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Ready!" : "Ready?";
+        PlayerReadyImage.enabled = playerReady;
         }
     }

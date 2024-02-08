@@ -4,14 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
     public class LobbyMainPanel : MonoBehaviourPunCallbacks
     {
+
         [Header("Login Panel")]
         public GameObject LoginPanel;
+    
+        public TMP_InputField PlayerEmailInput;
+        public TMP_InputField PlayerPasswordInput;
 
-        public InputField PlayerEmailInput;
-        public InputField PlayerPasswordInput;
-
+        [Header("Menu Panel")]
+        public GameObject MenuPanel;
+        public Button JoinSelectRoomButton;
 
         [Header("Selection Panel")]
         public GameObject SelectionPanel;
@@ -19,8 +24,8 @@ using Photon.Pun;
         [Header("Create Room Panel")]
         public GameObject CreateRoomPanel;
 
-        public InputField RoomNameInputField;
-        public InputField MaxPlayersInputField;
+        public TMP_InputField RoomNameInputField;
+        public TMP_InputField MaxPlayersInputField;
 
         [Header("Join Random Room Panel")]
         public GameObject JoinRandomRoomPanel;
@@ -33,7 +38,7 @@ using Photon.Pun;
 
         [Header("Inside Room Panel")]
         public GameObject InsideRoomPanel;
-
+        public GameObject VerticalLayoutGroup;
         public Button StartGameButton;
         public GameObject PlayerListEntryPrefab;
 
@@ -43,7 +48,7 @@ using Photon.Pun;
 
         #region UNITY
 
-        public void Awake()
+        public void Awake() // Start
         {
             PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -51,8 +56,11 @@ using Photon.Pun;
             roomListEntries = new Dictionary<string, GameObject>();
 
             // le nombre max de carractere pour le mail et le mot de passe est de 20 pour le mail et 12 pour le mdp
-            PlayerEmailInput.characterLimit = 30;
-            PlayerPasswordInput.characterLimit = 20;
+            PlayerEmailInput.characterLimit = 20;
+            PlayerPasswordInput.characterLimit = 12;
+
+            // rendre le panel Lobby invisible
+            SetActivePanel(LoginPanel.name);
             
         }
 
@@ -63,19 +71,24 @@ using Photon.Pun;
             SetActivePanel(LoginPanel.name);
         }
 
+        public void StartSelectPanel()
+        {
+            SetActivePanel(SelectionPanel.name);
+        }
+
         #endregion
 
         #region PUN CALLBACKS
 
         public override void OnConnectedToMaster()
         {
-            this.SetActivePanel(SelectionPanel.name);
+            this.SetActivePanel(MenuPanel.name);
+
         }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
         {
             ClearRoomListView();
-
             UpdateCachedRoomList(roomList);
             UpdateRoomListView();
         }
@@ -129,7 +142,7 @@ using Photon.Pun;
             foreach (Player p in PhotonNetwork.PlayerList)
             {
                 GameObject entry = Instantiate(PlayerListEntryPrefab);
-                entry.transform.SetParent(InsideRoomPanel.transform);
+                entry.transform.SetParent(VerticalLayoutGroup.transform);
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
 
@@ -167,7 +180,7 @@ using Photon.Pun;
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             GameObject entry = Instantiate(PlayerListEntryPrefab);
-            entry.transform.SetParent(InsideRoomPanel.transform);
+            entry.transform.SetParent(VerticalLayoutGroup.transform);
             entry.transform.localScale = Vector3.one;
             entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 
@@ -255,13 +268,15 @@ using Photon.Pun;
         public void OnLoginButtonClicked()
         {
             //le player Name est le début du mail sans tout ce qui est après le @
-            string playerName = PlayerEmailInput.text.Split('@')[0];
+            string playerName = PlayerEmailInput.text;
             Debug.Log(playerName);
 
             if (!playerName.Equals(""))
             {
-                PhotonNetwork.LocalPlayer.NickName = playerName;
+          
+                PhotonNetwork.NickName = playerName;
                 PhotonNetwork.ConnectUsingSettings();
+            
             }
             else
             {
@@ -333,6 +348,7 @@ using Photon.Pun;
         public void SetActivePanel(string activePanel)
         {
             LoginPanel.SetActive(activePanel.Equals(LoginPanel.name));
+            MenuPanel.SetActive(activePanel.Equals(MenuPanel.name));
             SelectionPanel.SetActive(activePanel.Equals(SelectionPanel.name));
             CreateRoomPanel.SetActive(activePanel.Equals(CreateRoomPanel.name));
             JoinRandomRoomPanel.SetActive(activePanel.Equals(JoinRandomRoomPanel.name));

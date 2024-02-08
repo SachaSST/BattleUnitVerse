@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
-
+using TMPro;
 
     public class LobbyTopPanel : MonoBehaviour
     {
-        private readonly string connectionStatusMessage = "    Connection Status: ";
+        private readonly string connectionStatusMessage = "Connection Status: "; //
 
         [Header("UI References")]
-        public Text ConnectionStatusText;
+        public TextMeshProUGUI ConnectionStatusText;
 
         #region UNITY
 
@@ -16,6 +16,5 @@ using Photon.Pun;
         {
             ConnectionStatusText.text = connectionStatusMessage + PhotonNetwork.NetworkClientState;
         }
-
         #endregion
     }

@@ -1,15 +1,7 @@
 fileFormatVersion: 2
-guid: d68bf8413681d9b4aa7328277e632e3f
-timeCreated: 1505379840
-licenseType: Store
-NativeFormatImporter:
+guid: 906fe28b264d646c3b89fd2a60efc191
+PrefabImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 119922
-  packageName: PUN 2 - FREE
-  packageVersion: 2.44
-  assetPath: Assets/Scenes/BUV/Prefabs/PlayerListEntry.prefab
-  uploadId: 632417
