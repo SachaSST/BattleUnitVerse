@@ -1,6 +1,6 @@
 # BattleUnitverse
 
-![BattleUnitverse Logo](https://example.com/battleunitverse_logo.png)
+![BattleUnitverse Logo]([https://example.com/battleunitverse_logo.png](https://cdn.discordapp.com/attachments/1178991896631189526/1183195882036932648/Charle_1.png?ex=65d14808&is=65bed308&hm=80e3c7cf8f77a226ccfd7812cf3a15bc3d8f7777f58cff19af7dcff16be927e9&))
 
 ## Overview
 
@@ -41,13 +41,6 @@ Players must combat adversaries from other universes to return them to their ori
 
 ## Credits
 
-- Developed by [Your Company Name](https://example.com)
-- Artwork by [Artist Name](https://artistportfolio.com)
-- Sound Design by [Sound Designer Name](https://sounddesignerportfolio.com)
+- Developed by [Helloworld](https://example.com)(Sacha/Damien/Barthélemy/Yanis/raphael)
+- Sound Design by [Sound Designer Name](Sacha Sitbon and Damien Placé)
 
-## License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
----
-Feel free to customize this README as needed for your GitHub repository. Happy gaming!
