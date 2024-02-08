@@ -1,8 +1,5 @@
 # BattleUnitverse
 
-![BattleUnitverse Logo](![logobuvvvvv](https://github.com/SachaSST/BattleUnitVerse/assets/112435152/7553ac17-34b4-4ecc-8a68-0586cdbef461)
-)
-
 ## Overview
 
 Welcome to BattleUnitverse, a 2D platformer game set in a world where technology has reached its peak. Players dive into an adventure as "Voyagers of the Verse," equipped with BattleUnits, machines capable of traversing temporal fissures and exploring parallel worlds.
