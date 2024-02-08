@@ -1,6 +1,7 @@
 # BattleUnitverse
 
-![BattleUnitverse Logo](file:///Users/sachasitbon/Desktop/Home:/B-U-V%20Project/assets/logobuvvvvv.png)
+![BattleUnitverse Logo](![logobuvvvvv](https://github.com/SachaSST/BattleUnitVerse/assets/112435152/7553ac17-34b4-4ecc-8a68-0586cdbef461)
+)
 
 ## Overview
 
