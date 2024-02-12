@@ -18,6 +18,11 @@ using TMPro;
         public GameObject MenuPanel;
         public Button JoinSelectRoomButton;
 
+        public TextMeshProUGUI PlayerNameText;
+        public TextMeshProUGUI PlayerLvlText;
+        public Slider SliderLvl;
+        public TextMeshProUGUI PlayerLvlSlide;
+
         [Header("Selection Panel")]
         public GameObject SelectionPanel;
 
@@ -42,9 +47,14 @@ using TMPro;
         public Button StartGameButton;
         public GameObject PlayerListEntryPrefab;
 
+        [Header("Settings Panel")]
+        public GameObject SettingsPanel;
+        
         private Dictionary<string, RoomInfo> cachedRoomList;
         private Dictionary<string, GameObject> roomListEntries;
         private Dictionary<int, GameObject> playerListEntries;
+
+
 
         #region UNITY
 
@@ -76,6 +86,30 @@ using TMPro;
             SetActivePanel(SelectionPanel.name);
         }
 
+        public void ExitGameButtonClicked()
+        {
+            //quitter le jeu
+            PhotonNetwork.Disconnect();
+            Application.Quit();
+        }
+        public void closedSettingsPanel()
+        {
+            //desactive le panel des settings
+            SettingsPanel.gameObject.SetActive(false);        
+        }
+        public void OpenSettingsPanel()
+        {
+            //active le panel des settings
+            SettingsPanel.gameObject.SetActive(true);
+        }
+
+        public void SetTextXP()
+        {
+            //mettre à jour le niveau du joueur
+            PlayerLvlSlide.text = (int)(SliderLvl.value*400) + "/400";
+ 
+        }
+
         #endregion
 
         #region PUN CALLBACKS
@@ -83,6 +117,9 @@ using TMPro;
         public override void OnConnectedToMaster()
         {
             this.SetActivePanel(MenuPanel.name);
+            PlayerNameText.text = PhotonNetwork.NickName;
+            PlayerLvlText.text = "10";
+            SliderLvl.value = (float)0.3;
 
         }
 
@@ -144,6 +181,7 @@ using TMPro;
                 GameObject entry = Instantiate(PlayerListEntryPrefab);
                 entry.transform.SetParent(VerticalLayoutGroup.transform);
                 entry.transform.localScale = Vector3.one;
+                entry.transform.localPosition = Vector3.zero;
                 entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
 
                 object isPlayerReady;
