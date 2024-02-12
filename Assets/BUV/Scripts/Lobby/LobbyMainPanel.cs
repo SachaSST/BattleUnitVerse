@@ -9,46 +9,46 @@ using TMPro;
     {
 
         [Header("Login Panel")]
-        public GameObject LoginPanel;
+        [SerializeField] private GameObject LoginPanel;
     
-        public TMP_InputField PlayerEmailInput;
-        public TMP_InputField PlayerPasswordInput;
+        [SerializeField] private TMP_InputField PlayerEmailInput;
+        [SerializeField] private TMP_InputField PlayerPasswordInput;
 
         [Header("Menu Panel")]
-        public GameObject MenuPanel;
-        public Button JoinSelectRoomButton;
+        [SerializeField] private GameObject MenuPanel;
+        [SerializeField] private Button JoinSelectRoomButton;
 
-        public TextMeshProUGUI PlayerNameText;
-        public TextMeshProUGUI PlayerLvlText;
-        public Slider SliderLvl;
-        public TextMeshProUGUI PlayerLvlSlide;
+        [SerializeField] private TextMeshProUGUI PlayerNameText;
+        [SerializeField] private TextMeshProUGUI PlayerLvlText;
+        [SerializeField] private Slider SliderLvl;
+        [SerializeField] private TextMeshProUGUI PlayerLvlSlide;
 
         [Header("Selection Panel")]
-        public GameObject SelectionPanel;
+        [SerializeField] private GameObject SelectionPanel;
 
         [Header("Create Room Panel")]
-        public GameObject CreateRoomPanel;
+        [SerializeField] private GameObject CreateRoomPanel;
 
-        public TMP_InputField RoomNameInputField;
-        public TMP_InputField MaxPlayersInputField;
+        [SerializeField] private TMP_InputField RoomNameInputField;
+        [SerializeField] private TMP_InputField MaxPlayersInputField;
 
         [Header("Join Random Room Panel")]
-        public GameObject JoinRandomRoomPanel;
+        [SerializeField] private GameObject JoinRandomRoomPanel;
 
         [Header("Room List Panel")]
-        public GameObject RoomListPanel;
+        [SerializeField] private GameObject RoomListPanel;
 
-        public GameObject RoomListContent;
-        public GameObject RoomListEntryPrefab;
+        [SerializeField] private GameObject RoomListContent;
+        [SerializeField] private GameObject RoomListEntryPrefab;
 
         [Header("Inside Room Panel")]
-        public GameObject InsideRoomPanel;
-        public GameObject VerticalLayoutGroup;
-        public Button StartGameButton;
-        public GameObject PlayerListEntryPrefab;
+        [SerializeField] private GameObject InsideRoomPanel;
+        [SerializeField] private GameObject VerticalLayoutGroup;
+        [SerializeField] private Button StartGameButton;
+        [SerializeField] private GameObject PlayerListEntryPrefab;
 
         [Header("Settings Panel")]
-        public GameObject SettingsPanel;
+        [SerializeField] private GameObject SettingsPanel;
         
         private Dictionary<string, RoomInfo> cachedRoomList;
         private Dictionary<string, GameObject> roomListEntries;
@@ -110,6 +110,7 @@ using TMPro;
  
         }
 
+        
         #endregion
 
         #region PUN CALLBACKS
