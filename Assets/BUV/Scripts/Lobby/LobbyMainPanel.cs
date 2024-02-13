@@ -159,7 +159,7 @@ using TMPro;
         {
             string roomName = "Room " + Random.Range(1000, 10000);
 
-            RoomOptions options = new RoomOptions {MaxPlayers = 8};
+            RoomOptions options = new RoomOptions {MaxPlayers = 4};
 
             PhotonNetwork.CreateRoom(roomName, options, null);
         }
@@ -181,17 +181,20 @@ using TMPro;
             {
                 GameObject entry = Instantiate(PlayerListEntryPrefab);
                 entry.transform.SetParent(VerticalLayoutGroup.transform);
-                entry.transform.localScale = Vector3.one;
-                entry.transform.localPosition = Vector3.zero;
+                // Get component rect transform de entry
+                RectTransform rectTransform = entry.GetComponent<RectTransform>();
+                // set le z de entry à 0
+                rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f); 
+                entry.transform.localScale = Vector3.one;               
                 entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
-
                 object isPlayerReady;
                 if (p.CustomProperties.TryGetValue(BUVGame.PLAYER_READY, out isPlayerReady))
                 {
                     entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
                 }
 
-                playerListEntries.Add(p.ActorNumber, entry);
+                playerListEntries.Add(p.ActorNumber, entry);//
+
             }
 
             StartGameButton.gameObject.SetActive(CheckPlayersReady());
@@ -220,7 +223,11 @@ using TMPro;
         {
             GameObject entry = Instantiate(PlayerListEntryPrefab);
             entry.transform.SetParent(VerticalLayoutGroup.transform);
-            entry.transform.localScale = Vector3.one;
+            // Get component rect transform de entry
+            RectTransform rectTransform = entry.GetComponent<RectTransform>();
+            // set le z de entry à 0
+            rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f); 
+            entry.transform.localScale = Vector3.one;  
             entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 
             playerListEntries.Add(newPlayer.ActorNumber, entry);
@@ -277,6 +284,7 @@ using TMPro;
 
             SetActivePanel(SelectionPanel.name);
         }
+        
 
         public void OnCreateRoomButtonClicked()
         {
@@ -285,7 +293,7 @@ using TMPro;
 
             byte maxPlayers;
             byte.TryParse(MaxPlayersInputField.text, out maxPlayers);
-            maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 8);
+            maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 4);
 
             RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 };
 
@@ -431,7 +439,8 @@ using TMPro;
                 entry.transform.SetParent(RoomListContent.transform);
                 entry.transform.localScale = Vector3.one;
                 entry.GetComponent<RoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, (byte)info.MaxPlayers);
-
+                entry.transform.localScale = Vector3.one;
+                entry.transform.localPosition = Vector3.zero;
                 roomListEntries.Add(info.Name, entry);
             }
         }

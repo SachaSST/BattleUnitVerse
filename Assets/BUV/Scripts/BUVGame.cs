@@ -18,9 +18,10 @@
             switch (colorChoice)
             {
                 case 0: return Color.red;
-                case 1: return Color.green;
+                case 1: return Color.red;
                 case 2: return Color.blue;
-                case 3: return Color.white;
+                case 3: return Color.blue;
+
             }
 
             return Color.black;
