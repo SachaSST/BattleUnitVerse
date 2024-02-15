@@ -60,6 +60,7 @@ using TMPro;
 
         public void Awake() // Start
         {
+
             PhotonNetwork.AutomaticallySyncScene = true;
 
             cachedRoomList = new Dictionary<string, RoomInfo>();
@@ -185,7 +186,8 @@ using TMPro;
                 RectTransform rectTransform = entry.GetComponent<RectTransform>();
                 // set le z de entry à 0
                 rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f); 
-                entry.transform.localScale = Vector3.one;               
+                //set le scale de entry à 0.85
+                entry.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
                 entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
                 object isPlayerReady;
                 if (p.CustomProperties.TryGetValue(BUVGame.PLAYER_READY, out isPlayerReady))
@@ -227,7 +229,7 @@ using TMPro;
             RectTransform rectTransform = entry.GetComponent<RectTransform>();
             // set le z de entry à 0
             rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f); 
-            entry.transform.localScale = Vector3.one;  
+            entry.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
             entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 
             playerListEntries.Add(newPlayer.ActorNumber, entry);
@@ -437,9 +439,8 @@ using TMPro;
             {
                 GameObject entry = Instantiate(RoomListEntryPrefab);
                 entry.transform.SetParent(RoomListContent.transform);
-                entry.transform.localScale = Vector3.one;
                 entry.GetComponent<RoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, (byte)info.MaxPlayers);
-                entry.transform.localScale = Vector3.one;
+                entry.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
                 entry.transform.localPosition = Vector3.zero;
                 roomListEntries.Add(info.Name, entry);
             }
