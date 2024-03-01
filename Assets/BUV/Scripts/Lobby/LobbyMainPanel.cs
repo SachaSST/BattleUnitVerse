@@ -23,6 +23,10 @@ using TMPro;
         [SerializeField] private Slider SliderLvl;
         [SerializeField] private TextMeshProUGUI PlayerLvlSlide;
 
+        [Header("Other Panel")]
+        [SerializeField] private GameObject ShopPanel;
+        [SerializeField] private GameObject InventoryPanel;
+
         [Header("Selection Panel")]
         [SerializeField] private GameObject SelectionPanel;
 
@@ -81,12 +85,7 @@ using TMPro;
             PhotonNetwork.Disconnect();
             SetActivePanel(LoginPanel.name);
         }
-
-        public void StartSelectPanel()
-        {
-            SetActivePanel(SelectionPanel.name);
-        }
-
+        
         public void ExitGameButtonClicked()
         {
             //quitter le jeu
@@ -110,6 +109,27 @@ using TMPro;
             PlayerLvlSlide.text = (int)(SliderLvl.value*400) + "/400";
  
         }
+
+        public void OpenShopPanel()
+        {
+            SetActivePanel(ShopPanel.name);
+        }
+
+        public void OpenInventoryPanel()
+        {
+            SetActivePanel(InventoryPanel.name);
+        }
+
+        public void CloseShopPanel()
+        {
+            SetActivePanel(MenuPanel.name);
+        }
+
+        public void CloseInventoryPanel()
+        {
+            SetActivePanel(MenuPanel.name);
+        }
+    
 
         
         #endregion
@@ -216,7 +236,7 @@ using TMPro;
             {
                 Destroy(entry.gameObject);
             }
-
+            //faire que le joueur qui a quitté la room ne soit plus ready
             playerListEntries.Clear();
             playerListEntries = null;
         }
@@ -295,11 +315,11 @@ using TMPro;
 
             byte maxPlayers;
             byte.TryParse(MaxPlayersInputField.text, out maxPlayers);
-            maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 4);
+            maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 4); // 2 et 4 sont les valeurs min et max de joueurs
 
-            RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 };
+            RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 }; // PlayerTtl est le temps en ms avant qu'un joueur soit retiré de la room
 
-            PhotonNetwork.CreateRoom(roomName, options, null);
+            PhotonNetwork.CreateRoom(roomName, options, null); // On crée la room
         }
 
         public void OnJoinRandomRoomButtonClicked()
@@ -312,25 +332,23 @@ using TMPro;
         public void OnLeaveGameButtonClicked()
         {
             PhotonNetwork.LeaveRoom();
+            
         }
 
         public void OnLoginButtonClicked()
         {
             //le player Name est le début du mail sans tout ce qui est après le @
             string playerName = PlayerEmailInput.text;
-            Debug.Log(playerName);
-
             if (!playerName.Equals(""))
             {
-          
                 PhotonNetwork.NickName = playerName;
-                PhotonNetwork.ConnectUsingSettings();
-            
+                
             }
             else
             {
                 Debug.LogError("Player Name is invalid.");
             }
+            
         }
 
         public void OnRoomListButtonClicked()
@@ -339,7 +357,6 @@ using TMPro;
             {
                 PhotonNetwork.JoinLobby();
             }
-
             SetActivePanel(RoomListPanel.name);
         }
 
@@ -402,7 +419,10 @@ using TMPro;
             CreateRoomPanel.SetActive(activePanel.Equals(CreateRoomPanel.name));
             JoinRandomRoomPanel.SetActive(activePanel.Equals(JoinRandomRoomPanel.name));
             RoomListPanel.SetActive(activePanel.Equals(RoomListPanel.name));    // UI should call OnRoomListButtonClicked() to activate this
-            InsideRoomPanel.SetActive(activePanel.Equals(InsideRoomPanel.name));
+            InsideRoomPanel.SetActive(activePanel.Equals(InsideRoomPanel.name));     
+            ShopPanel.SetActive(activePanel.Equals(ShopPanel.name));   
+            InventoryPanel.SetActive(activePanel.Equals(InventoryPanel.name));     
+
         }
 
         private void UpdateCachedRoomList(List<RoomInfo> roomList)

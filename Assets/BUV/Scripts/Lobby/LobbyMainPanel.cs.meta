@@ -1,3 +1,10 @@
 fileFormatVersion: 2
 guid: 89030fcceb4e41aa8270ddbfca4e9229
 timeCreated: 1707052663
+AssetOrigin:
+  serializedVersion: 1
+  productId: 119922
+  packageName: PUN 2 - FREE
+  packageVersion: 
+  assetPath: Assets/BUV/Scripts/Lobby/LobbyMainPanel.cs
+  uploadId: 0

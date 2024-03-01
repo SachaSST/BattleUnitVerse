@@ -1,3 +1,10 @@
 fileFormatVersion: 2
 guid: 5ed592a2e8f14df4b08281ef357fb49d
 timeCreated: 1707052718
+AssetOrigin:
+  serializedVersion: 1
+  productId: 119922
+  packageName: PUN 2 - FREE
+  packageVersion: 
+  assetPath: Assets/BUV/Scripts/Lobby/RoomListEntry.cs
+  uploadId: 0

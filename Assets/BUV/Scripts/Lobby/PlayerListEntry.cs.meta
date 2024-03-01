@@ -1,3 +1,10 @@
 fileFormatVersion: 2
 guid: a81a19b973a94174bc29feef3c0b17f3
 timeCreated: 1707052693
+AssetOrigin:
+  serializedVersion: 1
+  productId: 119922
+  packageName: PUN 2 - FREE
+  packageVersion: 
+  assetPath: Assets/BUV/Scripts/Lobby/PlayerListEntry.cs
+  uploadId: 0

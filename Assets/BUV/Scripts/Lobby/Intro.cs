@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Intro : MonoBehaviour
 {
-        public float wait_time = 5f;
+        public float wait_time = 4.3f;
         public void Start()
         {
             StartCoroutine(Wait_for_intro());
@@ -16,4 +16,10 @@ public class Intro : MonoBehaviour
             yield return new WaitForSeconds(wait_time);  
             SceneManager.LoadScene("BUV-Lobby");
         }
+
+        public void Skip_intro()
+        {
+            SceneManager.LoadScene("BUV-Lobby");
+        }
+
 }

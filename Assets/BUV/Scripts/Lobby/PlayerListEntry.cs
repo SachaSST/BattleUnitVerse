@@ -29,8 +29,14 @@ using TMPro;
         private int ownerId;
         private bool isPlayerReady;
         public void Listener(){
-            isPlayerReady = !isPlayerReady;
-            SetPlayerReady(isPlayerReady);
+            isPlayerReady = !isPlayerReady; // toggle the player's ready state
+            //activate the ready button (setplayerready) if the player is ready 
+            if (isPlayerReady){
+                SetPlayerReady(!isPlayerReady);
+            }
+            else{
+                SetPlayerReady(isPlayerReady);
+            }
             Hashtable props = new Hashtable() {{BUVGame.PLAYER_READY, isPlayerReady}}; // set the player's ready state
             PhotonNetwork.LocalPlayer.SetCustomProperties(props); // set the player's custom properties
             if (PhotonNetwork.IsMasterClient) // if the local player is the master client
@@ -58,10 +64,10 @@ using TMPro;
                 Debug.Log("PlayerListEntry:Start() this is not the local player");
             }
             else
-            {   Hashtable initialProps = new Hashtable() {{BUVGame.PLAYER_READY, isPlayerReady}, {BUVGame.PLAYER_LIVES, BUVGame.PLAYER_MAX_LIVES}};
+            {   
+                Hashtable initialProps = new Hashtable() {{BUVGame.PLAYER_READY, isPlayerReady}, {BUVGame.PLAYER_LIVES, BUVGame.PLAYER_MAX_LIVES}};
                 PhotonNetwork.LocalPlayer.SetCustomProperties(initialProps);
                 PhotonNetwork.LocalPlayer.SetScore(0);
-                Listener();
 
             }
         }
@@ -76,6 +82,7 @@ using TMPro;
         public void Initialize(int playerId, string playerName)
         {
             ownerId = playerId;
+            Debug.Log("PlayerListEntry:Initialize() ownerId: " + ownerId);
             PlayerNameText.text = playerName;
         }
 

@@ -9,7 +9,9 @@
 
         public const int PLAYER_MAX_LIVES = 3;
 
-        public const string PLAYER_LIVES = "PlayerLives";
+        public const int PLAYER_HEALTH = 100;
+        public const int PLAYER_LIVES = 3;
+
         public const string PLAYER_READY = "IsPlayerReady";
         public const string PLAYER_LOADED_LEVEL = "PlayerLoadedLevel";
 
