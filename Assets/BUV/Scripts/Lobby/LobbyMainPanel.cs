@@ -71,7 +71,7 @@ using TMPro;
             roomListEntries = new Dictionary<string, GameObject>();
 
             // le nombre max de carractere pour le mail et le mot de passe est de 20 pour le mail et 12 pour le mdp
-            PlayerEmailInput.characterLimit = 20;
+            PlayerEmailInput.characterLimit = 25;
             PlayerPasswordInput.characterLimit = 12;
 
             // rendre le panel Lobby invisible
@@ -86,12 +86,6 @@ using TMPro;
             SetActivePanel(LoginPanel.name);
         }
         
-        public void ExitGameButtonClicked()
-        {
-            //quitter le jeu
-            PhotonNetwork.Disconnect();
-            Application.Quit();
-        }
         public void closedSettingsPanel()
         {
             //desactive le panel des settings
@@ -206,8 +200,8 @@ using TMPro;
                 RectTransform rectTransform = entry.GetComponent<RectTransform>();
                 // set le z de entry à 0
                 rectTransform.localPosition = new Vector3(rectTransform.localPosition.x, rectTransform.localPosition.y, 0f); 
-                //set le scale de entry à 0.85
-                entry.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+                //set le scale de entry à 1f
+                entry.transform.localScale = new Vector3(0.85f, 0.85f,0.85f);
                 entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
                 object isPlayerReady;
                 if (p.CustomProperties.TryGetValue(BUVGame.PLAYER_READY, out isPlayerReady))
@@ -310,16 +304,22 @@ using TMPro;
 
         public void OnCreateRoomButtonClicked()
         {
+            //on recupère le nom de la room
             string roomName = RoomNameInputField.text;
+            //si le nom de la room est vide, on lui donne un nom par défaut
             roomName = (roomName.Equals(string.Empty)) ? "Room " + Random.Range(1000, 10000) : roomName;
-
+            
+            //maxPlayers est le nombre de joueurs max dans la room défini ou non par le joueur
             byte maxPlayers;
+            //si le nombre de joueurs est invalide, on lui donne une valeur par défaut
             byte.TryParse(MaxPlayersInputField.text, out maxPlayers);
             maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 4); // 2 et 4 sont les valeurs min et max de joueurs
 
-            RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 }; // PlayerTtl est le temps en ms avant qu'un joueur soit retiré de la room
+            RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers, PlayerTtl = 10000 }; 
+            // PlayerTtl est le temps en ms avant qu'un joueur soit retiré de la room
 
-            PhotonNetwork.CreateRoom(roomName, options, null); // On crée la room
+            // On crée la room
+            PhotonNetwork.CreateRoom(roomName, options, null); 
         }
 
         public void OnJoinRandomRoomButtonClicked()
@@ -342,7 +342,7 @@ using TMPro;
             if (!playerName.Equals(""))
             {
                 PhotonNetwork.NickName = playerName;
-                
+                PhotonNetwork.ConnectUsingSettings();
             }
             else
             {
@@ -350,6 +350,7 @@ using TMPro;
             }
             
         }
+        
 
         public void OnRoomListButtonClicked()
         {
@@ -460,7 +461,7 @@ using TMPro;
                 GameObject entry = Instantiate(RoomListEntryPrefab);
                 entry.transform.SetParent(RoomListContent.transform);
                 entry.GetComponent<RoomListEntry>().Initialize(info.Name, (byte)info.PlayerCount, (byte)info.MaxPlayers);
-                entry.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+                entry.transform.localScale = new Vector3(1f, 1f, 1f);
                 entry.transform.localPosition = Vector3.zero;
                 roomListEntries.Add(info.Name, entry);
             }

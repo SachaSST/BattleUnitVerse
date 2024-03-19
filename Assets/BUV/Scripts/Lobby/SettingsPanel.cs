@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
+using System.Collections.Generic;
 
 public class SettingsPanel : MonoBehaviour
 {
@@ -16,6 +18,14 @@ public class SettingsPanel : MonoBehaviour
         int qualityLevel = isHighQuality ? 5 : 0;
         QualitySettings.SetQualityLevel(qualityLevel);
     }
+
+    public void ExitGameButtonClicked()
+        {
+            //quitter le jeu
+            Screen.fullScreen = true;
+            PhotonNetwork.Disconnect();
+            Application.Quit();
+        }
 
     public void SetFullscreen(bool isFullscreen)
     {
@@ -47,3 +57,5 @@ public class SettingsPanel : MonoBehaviour
         
     }
 }
+
+

@@ -23,10 +23,6 @@ public class Network : MonoBehaviour
         IEnumerator CheckConnection()
         {
             yield return new WaitForSeconds(wait_time);  
-            if (PhotonNetwork.ConnectUsingSettings() == false)
-            {
-                ErrorNetworkPanel.gameObject.SetActive(true);
-            }
         }
 
         //start la coroutine toute les 10 secondes
