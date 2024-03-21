@@ -182,7 +182,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Cercle_0: 1804904819385363709
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

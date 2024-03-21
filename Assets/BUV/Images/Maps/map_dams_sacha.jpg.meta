@@ -182,7 +182,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      map_dams_sacha_0: 6620294515539645869
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
