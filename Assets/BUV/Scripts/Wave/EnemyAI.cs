@@ -30,6 +30,21 @@ public class EnemyAI : MonoBehaviour
    
    private Path path;
    private int currentWaypoint = 0;
+
+
+	private Animator anim;
+
+
+
+
+
+
+
+
+
+
+
+
    
    bool isGrounded = false;
    
@@ -40,6 +55,8 @@ public class EnemyAI : MonoBehaviour
    {
        seeker = GetComponent<Seeker>();
        rb = GetComponent<Rigidbody2D>();
+	   anim = GetComponent<Animator>();
+
        
        InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
    }
@@ -55,10 +72,20 @@ public class EnemyAI : MonoBehaviour
 
    private void UpdatePath()
    {
+
+		float horizontal = Input.GetAxis("Horizontal");
+
        if (followEnabled && TargerInDistance() && seeker.IsDone())
        {
            seeker.StartPath(rb.position, target.position, OnPathComplete);
        }
+
+
+
+		// set animatior parameters
+		anim.SetBool("run", horizontal != 0);
+		
+
            
    }
    private void PathFollow()
