@@ -6,11 +6,40 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
+
     private Animator anim;
     private BoxCollider2D coll;
     private SpriteRenderer sprite;
+    
+    private float horizontal;
+    private float speed = 8f;
+
+
+    
+
+    
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
+    
+    
+    
+    
+   
+    
+
+    
+   
+    
+    
 
     [SerializeField] private LayerMask jumpableGround;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private Transform wallCheck2;
+    [SerializeField] private LayerMask wallLayer;
+
+    
+    
+    
     
     
     private int Jumps;
@@ -34,10 +63,20 @@ public class PlayerMovement : MonoBehaviour
     {
         float dirX = Input.GetAxis("Horizontal"); // -1 0 1
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+        horizontal = Input.GetAxis("Horizontal");
+        
+      
 
         if (IsGrounded())
         {
             Jumps = 2;
+            jumpForce = 12;
+        }
+
+        if (isWalled() && IsGrounded())
+        {
+            Jumps = 3;
+            jumpForce = 18;
         }
         
         if (Input.GetButtonDown("Jump") && Jumps>1)
@@ -47,10 +86,19 @@ public class PlayerMovement : MonoBehaviour
         }
 
         UpdateAnimationUpdate();
+        WallSlide();
+        
+        
+        
     }
+    
+    
+    
+    
 
     private void UpdateAnimationUpdate()
     {
+        
         float dirX = Input.GetAxis("Horizontal");
         if (dirX > 0f)
         {
@@ -68,10 +116,47 @@ public class PlayerMovement : MonoBehaviour
         {
             anim.SetBool("running", false);
         }
+        
+        
+        
     }
+    
+    private bool isWalled()
+    {
+        // Vérifie si le personnage est proche d'un mur soit à gauche, soit à droite.
+        bool walledLeft = Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        bool walledRight = Physics2D.OverlapCircle(wallCheck2.position, 0.2f, wallLayer);
+    
+        return walledLeft || walledRight;
+    }
+
+    private void WallSlide()
+    
+    {
+        if (isWalled() && !IsGrounded() && rb.velocity.x   != 0f)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue) );
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+
+        if (isWallSliding)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
+        }
+    }
+    
+    
+    
+    
 
     private bool IsGrounded()
     {
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
+    
+    
 }
