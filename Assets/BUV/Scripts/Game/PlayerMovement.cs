@@ -36,6 +36,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Transform wallCheck2;
     [SerializeField] private LayerMask wallLayer;
+    
+    
+    
+    [SerializeField] private GameObject wallPrefab;
+    private float timeSinceLastWall = 0f; // Temps écoulé depuis le dernier mur placé.
+    private float initialCooldown = 3f; // Cooldown pour le premier mur.
+    private float regularCooldown = 10f; // Cooldown pour les murs suivants.
+    private bool firstWallPlaced = false; // A-t-on déjà placé le premier mur ?
+
+
 
     
     
@@ -84,6 +94,20 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             Jumps--;
         }
+        
+        
+        // Mettre à jour le temps écoulé depuis le dernier mur placé.
+        if (timeSinceLastWall < regularCooldown) {
+            timeSinceLastWall += Time.deltaTime;
+        }
+
+        // Vérifie si le joueur presse la touche X et si le cooldown est terminé.
+        if (Input.GetKeyDown(KeyCode.X) && (timeSinceLastWall >= (firstWallPlaced ? regularCooldown : initialCooldown)))
+        {
+            PlaceWall();
+            timeSinceLastWall = 0f; // Réinitialiser le temps depuis le dernier mur.
+            firstWallPlaced = true; // Marquer que le premier mur a été placé.
+        }
 
         UpdateAnimationUpdate();
         WallSlide();
@@ -92,6 +116,17 @@ public class PlayerMovement : MonoBehaviour
         
     }
     
+    
+    private void PlaceWall()
+    {
+        // Ajuste la direction de placement du mur basée sur où le joueur regarde.
+        Vector3 wallPosition = transform.position + new Vector3(sprite.flipX ? 2f : -2f, 0, 0);
+        GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity);
+        Destroy(wall, 2f); // Le mur disparaît après 2 secondes.
+    }
+
+
+
     
     
     
