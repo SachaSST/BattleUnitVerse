@@ -51,6 +51,13 @@ public class PlayerMovement : MonoBehaviour
     
     
     
+    [SerializeField] private GameObject Floor ; // Le prefab pour le sol temporaire.
+    private float timeSinceLastGround = 0f; // Temps écoulé depuis le dernier sol placé.
+    private float groundCooldown = 1f; // Cooldown pour placer le sol.
+    
+    
+    
+    
     
     private int Jumps;
     
@@ -108,12 +115,38 @@ public class PlayerMovement : MonoBehaviour
             timeSinceLastWall = 0f; // Réinitialiser le temps depuis le dernier mur.
             firstWallPlaced = true; // Marquer que le premier mur a été placé.
         }
+        
+        if (timeSinceLastGround < groundCooldown)
+        {
+            timeSinceLastGround += Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y) && timeSinceLastGround >= groundCooldown)
+        {
+            PlaceGround();
+            timeSinceLastGround = 0f;
+        }
 
         UpdateAnimationUpdate();
         WallSlide();
         
         
         
+    }
+    
+    private void PlaceGround()
+    {
+        Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
+        GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
+        Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            Jumps = 2; // Réinitialise les sauts lorsque le joueur touche le sol.
+        }
     }
     
     

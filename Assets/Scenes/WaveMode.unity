@@ -1007,6 +1007,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 136
   wallPrefab: {fileID: 699817436370003229, guid: ebf5564e4b6ad47a9a8245299781d753, type: 3}
+  Floor: {fileID: 3945467995415066412, guid: 97715c8620d9549859b346459593f3a1, type: 3}
   jumpForce: 12
   moveSpeed: 7
 --- !u!61 &1733966141
