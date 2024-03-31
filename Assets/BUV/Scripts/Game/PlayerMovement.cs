@@ -136,9 +136,33 @@ public class PlayerMovement : MonoBehaviour
     
     private void PlaceGround()
     {
-        Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
-        GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
-        Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+        if ((-13.11f < transform.position.x && transform.position.x < -7.07f) &&
+            (-2.18f < transform.position.y && transform.position.y < 2.15f)) //si le personnage est à gauche de la plateforme (wavemode)
+        {
+            Vector3 groundPosition = new Vector3(-10.82f, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity); //plateforme s'alligne automatiquement 
+            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+        }
+        else if ((7.22f<transform.position.x && transform.position.x<13.35f)  && (-2.18f < transform.position.y && transform.position.y< 2.15f)) //si le personnage est à droite de la plateforme (wavemode)
+        {
+            Vector3 groundPosition = new Vector3(10.95141f, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity); //plateforme s'alligne automatiquement
+            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+        }
+        else if (IsGrounded()) // si le personnage est au sol
+        {
+            // le sol se crée 0.50y plus haut
+            Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2+0.50f, transform.position.z);
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
+            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+        }
+        else // si le personnage n'est pas au sol
+        {
+            Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
+            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -153,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
     private void PlaceWall()
     {
         // Ajuste la direction de placement du mur basée sur où le joueur regarde.
-        Vector3 wallPosition = transform.position + new Vector3(sprite.flipX ? 2f : -2f, 0, 0);
+        Vector3 wallPosition = transform.position + new Vector3(sprite.flipX ? 2f : -2f, 0.27f, 0);
         GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity);
         Destroy(wall, 2f); // Le mur disparaît après 2 secondes.
     }
