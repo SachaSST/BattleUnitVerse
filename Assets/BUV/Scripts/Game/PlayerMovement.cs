@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
@@ -80,9 +81,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float dirX = Input.GetAxis("Horizontal"); // -1 0 1
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
-        horizontal = Input.GetAxis("Horizontal");
-        
-      
+        //horizontal = Input.GetAxis("Horizontal");
 
         if (IsGrounded())
         {

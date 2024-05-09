@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using TMPro;
 
 
 public class PlayerLife : MonoBehaviour
@@ -14,7 +15,9 @@ public class PlayerLife : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private GameObject player;
-    private int Nbdevie = 3;
+    public int Nbdevie = 3;
+
+    public TextMeshPro NombreDeViesTexte;
     
     // Start is called before the first frame update
     void Start()
@@ -26,6 +29,7 @@ public class PlayerLife : MonoBehaviour
         
         starta = transform.localScale;
         startPos = transform.position;
+        NombreDeViesTexte.text = Nbdevie + " vies";
     }
 
     // Update is called once per frame
@@ -44,6 +48,8 @@ public class PlayerLife : MonoBehaviour
     {
         if (Nbdevie > 0)
         {
+            Nbdevie--;// ajoute
+            NombreDeViesTexte.text = Nbdevie + " vies";
             anim.SetTrigger("death");
             StartCoroutine(Respawn(0.5f)); // lance la fonction respwan et donne le couldown avant de réaparaitre
             anim.ResetTrigger("death");
@@ -55,8 +61,17 @@ public class PlayerLife : MonoBehaviour
         rb.simulated = false; // enleve l'ombre du perso
         transform.localScale = new Vector3(0, 0, 0); // fait disparaitre le perso
         yield return new WaitForSeconds(duration); // le temps avant de faire reaparaitre
-        transform.position = new Vector3(0, 0, 0); //donne la nouvelle position de respawan au joueur
+        transform.position = new Vector3(0, 0, -4.23f); //donne la nouvelle position de respawan au joueur
         transform.localScale = starta; // redonne les dim du perso et le fait réaparaitre
         rb.simulated = true; // redonne les shadows du perso
+    }
+    
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            Debug.Log("Le joueur est mort");
+            Die();// ajoute
+        }
     }
 }
