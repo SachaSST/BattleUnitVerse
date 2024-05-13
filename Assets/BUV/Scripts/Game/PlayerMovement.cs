@@ -249,5 +249,15 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
     
-    
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+           	Debug.Log("Le joueur est mort");
+            //Die();// ajoute
+ 			Vector2 direction = rb.transform.position -collision.gameObject.transform.position;
+			Vector2 force = direction.normalized*1000f; 
+			rb.AddForce(force);
+        }
+    }
 }

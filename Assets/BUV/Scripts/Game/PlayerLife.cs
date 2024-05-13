@@ -66,12 +66,13 @@ public class PlayerLife : MonoBehaviour
         rb.simulated = true; // redonne les shadows du perso
     }
     
-    public void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Bullet")
-        {
-            Debug.Log("Le joueur est mort");
-            Die();// ajoute
-        }
-    }
+    // public void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     if (collision.gameObject.tag == "Bullet")
+    //     {
+    //         Debug.Log("Le joueur est mort");
+    //         //Die();// ajoute
+    //         rb.AddExplosionForce(500, collision.gameObject.transform.position, 10); 
+    //     }
+    // }
 }
