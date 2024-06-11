@@ -475,6 +475,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd50ca3afdd342929c62dc1b1fecd8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackRange: 1
+  attackDamage: 20
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  attackPoint: {fileID: 0}
   jumpableGround:
     serializedVersion: 2
     m_Bits: 8
@@ -500,7 +506,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Nbdevie: 3
+  maxHP: 100
+  currentHP: 0
   NombreDeViesTexte: {fileID: 5553732020448898853}
+  HealthText: {fileID: 0}
+  GameOverText: {fileID: 0}
 --- !u!222 &1791066308138443605
 CanvasRenderer:
   m_ObjectHideFlags: 0

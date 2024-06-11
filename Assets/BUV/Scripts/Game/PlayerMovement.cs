@@ -1,87 +1,53 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
-
     private Animator anim;
     private BoxCollider2D coll;
     private SpriteRenderer sprite;
-    
     private float horizontal;
     private float speed = 8f;
 
+    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private int attackDamage = 20;
 
-    
-
-    
-    private bool isWallSliding;
-    private float wallSlidingSpeed = 2f;
-    
-    
-    
-    
-   
-    
-
-    
-   
-    
-    
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private Transform attackPoint;
 
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Transform wallCheck2;
     [SerializeField] private LayerMask wallLayer;
-    
-    
-    
     [SerializeField] private GameObject wallPrefab;
     private float timeSinceLastWall = 0f; // Temps écoulé depuis le dernier mur placé.
     private float initialCooldown = 3f; // Cooldown pour le premier mur.
     private float regularCooldown = 10f; // Cooldown pour les murs suivants.
     private bool firstWallPlaced = false; // A-t-on déjà placé le premier mur ?
-
-
-
-    
-    
-    
-    
-    [SerializeField] private GameObject Floor ; // Le prefab pour le sol temporaire.
+    [SerializeField] private GameObject Floor; // Le prefab pour le sol temporaire.
     private float timeSinceLastGround = 0f; // Temps écoulé depuis le dernier sol placé.
     private float groundCooldown = 1f; // Cooldown pour placer le sol.
-    
-    
-    
-    
-    
     private int Jumps;
-    
     [SerializeField] private float jumpForce = 12;
     [SerializeField] private float moveSpeed = 7;
-    
-    // Start is called before the first frame update
+
+    private bool isWallSliding;
+    private float wallSlidingSpeed = 2f;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
-        
-        
     }
 
-    // Update is called once per frame
     private void Update()
     {
         float dirX = Input.GetAxis("Horizontal"); // -1 0 1
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
-        //horizontal = Input.GetAxis("Horizontal");
 
         if (IsGrounded())
         {
@@ -94,14 +60,13 @@ public class PlayerMovement : MonoBehaviour
             Jumps = 3;
             jumpForce = 18;
         }
-        
-        if (Input.GetButtonDown("Jump") && Jumps>1)
+
+        if (Input.GetButtonDown("Jump") && Jumps > 1)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             Jumps--;
         }
-        
-        
+
         // Mettre à jour le temps écoulé depuis le dernier mur placé.
         if (timeSinceLastWall < regularCooldown) {
             timeSinceLastWall += Time.deltaTime;
@@ -114,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
             timeSinceLastWall = 0f; // Réinitialiser le temps depuis le dernier mur.
             firstWallPlaced = true; // Marquer que le premier mur a été placé.
         }
-        
+
         if (timeSinceLastGround < groundCooldown)
         {
             timeSinceLastGround += Time.deltaTime;
@@ -126,13 +91,15 @@ public class PlayerMovement : MonoBehaviour
             timeSinceLastGround = 0f;
         }
 
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Attack();
+        }
+
         UpdateAnimationUpdate();
         WallSlide();
-        
-        
-        
     }
-    
+
     private void PlaceGround()
     {
         if ((-13.11f < transform.position.x && transform.position.x < -7.07f) &&
@@ -161,7 +128,6 @@ public class PlayerMovement : MonoBehaviour
             GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
             Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
         }
-        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -171,8 +137,7 @@ public class PlayerMovement : MonoBehaviour
             Jumps = 2; // Réinitialise les sauts lorsque le joueur touche le sol.
         }
     }
-    
-    
+
     private void PlaceWall()
     {
         // Ajuste la direction de placement du mur basée sur où le joueur regarde.
@@ -181,22 +146,34 @@ public class PlayerMovement : MonoBehaviour
         Destroy(wall, 2f); // Le mur disparaît après 2 secondes.
     }
 
+    private void Attack()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
 
-    
-    
-    
+            Vector2 direction = enemy.transform.position - transform.position;
+            direction.Normalize();
+            enemy.GetComponent<Rigidbody2D>().AddForce(direction * 500f);
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+    }
 
     private void UpdateAnimationUpdate()
     {
-        
         float dirX = Input.GetAxis("Horizontal");
         if (dirX > 0f)
         {
             anim.SetBool("running", true);
             sprite.flipX = true;
-            
-
         }
         else if (dirX < 0f)
         {
@@ -207,11 +184,8 @@ public class PlayerMovement : MonoBehaviour
         {
             anim.SetBool("running", false);
         }
-        
-        
-        
     }
-    
+
     private bool isWalled()
     {
         // Vérifie si le personnage est proche d'un mur soit à gauche, soit à droite.
@@ -222,12 +196,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void WallSlide()
-    
     {
-        if (isWalled() && !IsGrounded() && rb.velocity.x   != 0f)
+        if (isWalled() && !IsGrounded() && rb.velocity.x != 0f)
         {
             isWallSliding = true;
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue) );
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
@@ -239,25 +212,21 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, -wallSlidingSpeed);
         }
     }
-    
-    
-    
-    
 
     private bool IsGrounded()
     {
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
-    
+
     public void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Bullet")
         {
-           	Debug.Log("Le joueur est mort");
+            Debug.Log("Le joueur est mort");
             //Die();// ajoute
- 			Vector2 direction = rb.transform.position -collision.gameObject.transform.position;
-			Vector2 force = direction.normalized*1000f; 
-			rb.AddForce(force);
+            Vector2 direction = rb.transform.position - collision.gameObject.transform.position;
+            Vector2 force = direction.normalized * 1000f; 
+            rb.AddForce(force);
         }
     }
 }
