@@ -143,7 +143,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      buisson dangereux_0: -7253723658092113205
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

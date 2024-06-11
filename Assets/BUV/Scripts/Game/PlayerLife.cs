@@ -11,6 +11,7 @@ public class PlayerLife : MonoBehaviour
 {
     private Vector2 startPos; //pour revenir au debut du jeu
     private Vector4 starta; // garde en memoire les dim du perso 
+    
     private Camera _camera;
     private Rigidbody2D rb;
     private Animator anim;
@@ -18,6 +19,7 @@ public class PlayerLife : MonoBehaviour
     public int Nbdevie = 3;
 
     public TextMeshPro NombreDeViesTexte;
+    
     
     // Start is called before the first frame update
     void Start()
@@ -48,22 +50,35 @@ public class PlayerLife : MonoBehaviour
     {
         if (Nbdevie > 0)
         {
-            Nbdevie--;// ajoute
+            Nbdevie--; // Décrémente le nombre de vies
             NombreDeViesTexte.text = Nbdevie + " vies";
             anim.SetTrigger("death");
-            StartCoroutine(Respawn(0.5f)); // lance la fonction respwan et donne le couldown avant de réaparaitre
+            StartCoroutine(Respawn(0.5f)); // Lance la fonction respawn et donne le cooldown avant de réapparaître
             anim.ResetTrigger("death");
+        }
+        else
+        {
+            // Si Nbdevie est à 0, le joueur ne réapparaît pas
+            anim.SetTrigger("death");
+            rb.simulated = false; // Désactive le rigidbody pour empêcher tout mouvement
+            Debug.Log("Le joueur est mort de manière permanente");
+            this.gameObject.SetActive(false); // Désactive le GameObject du joueur
+            // Vous pouvez également ajouter d'autres actions ici, comme afficher un message de fin de jeu
         }
     }
     
+
     IEnumerator Respawn(float duration)
-    { 
-        rb.simulated = false; // enleve l'ombre du perso
-        transform.localScale = new Vector3(0, 0, 0); // fait disparaitre le perso
-        yield return new WaitForSeconds(duration); // le temps avant de faire reaparaitre
-        transform.position = new Vector3(0, 0, -4.23f); //donne la nouvelle position de respawan au joueur
-        transform.localScale = starta; // redonne les dim du perso et le fait réaparaitre
-        rb.simulated = true; // redonne les shadows du perso
+    {
+        if (Nbdevie > 0) // Vérifie encore une fois si le joueur a des vies restantes
+        {
+            rb.simulated = false; // Enlève l'ombre du perso
+            transform.localScale = new Vector3(0, 0, 0); // Fait disparaître le perso
+            yield return new WaitForSeconds(duration); // Temps avant de réapparaître
+            transform.position = startPos; // Redonne la position initiale au joueur
+            transform.localScale = starta; // Redonne les dimensions du perso et le fait réapparaître
+            rb.simulated = true; // Redonne les ombres du perso
+        }
     }
     
     // public void OnCollisionEnter2D(Collision2D collision)
