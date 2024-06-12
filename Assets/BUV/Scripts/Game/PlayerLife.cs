@@ -1,12 +1,11 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
 
 public class PlayerLife : MonoBehaviour
 {
-    private Vector2 startPos; // pour revenir au debut du jeu
-    private Vector4 starta; // garde en memoire les dimensions du perso 
+    private Vector2 startPos; // pour revenir au début du jeu
+    private Vector4 starta; // garde en mémoire les dimensions du perso 
 
     private Camera _camera;
     private Rigidbody2D rb;
@@ -135,5 +134,11 @@ public class PlayerLife : MonoBehaviour
         _camera.transform.position = new Vector3(startPos.x, startPos.y, _camera.transform.position.z);
         // Désactiver le joueur
         player.SetActive(false);
+    }
+
+    public void SetGameOver()
+    {
+        Nbdevie = 0; // Définir le nombre de vies à 0
+        GameOver();
     }
 }

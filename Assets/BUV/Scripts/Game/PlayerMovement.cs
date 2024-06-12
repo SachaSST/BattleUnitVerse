@@ -15,7 +15,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private int attackDamage = 20;
 
     [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private Transform attackPoint;
+    [SerializeField] private Transform attackPointRight;
+    [SerializeField] private Transform attackPointLeft;
 
     [SerializeField] private LayerMask jumpableGround;
     [SerializeField] private Transform wallCheck;
@@ -148,6 +149,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Attack()
     {
+        Transform attackPoint = sprite.flipX ? attackPointLeft : attackPointRight;
+
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
         foreach (Collider2D enemy in hitEnemies)
@@ -162,9 +165,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (attackPoint == null) return;
+        if (attackPointRight != null)
+        {
+            Gizmos.DrawWireSphere(attackPointRight.position, attackRange);
+        }
 
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        if (attackPointLeft != null)
+        {
+            Gizmos.DrawWireSphere(attackPointLeft.position, attackRange);
+        }
     }
 
     private void UpdateAnimationUpdate()

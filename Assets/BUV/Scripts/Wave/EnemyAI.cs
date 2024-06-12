@@ -2,41 +2,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-using TMPro; // Pour utiliser TextMeshPro
+using TMPro;
 
 public class EnemyAI : MonoBehaviour
 {
     [Header("Pathfinding")]
-    public Transform target;
+    private Transform target;
     public float activateDistance = 50f;
     public float pathUpdateSeconds = 0.5f;
-    
+
     [Header("Physics")]
     public float speed = 200f;
-    public float nextWaypointDistance = 0.5f; // Distance très petite pour se coller au joueur
-    
+    public float nextWaypointDistance = 0.5f;
+
     public float jumpNodeHeightRequirement = 0.8f;
     public float jumpModifier = 0.3f;
     public float jumpCheckOffset = 0.1f;
-    
+
     [Header("Custom Behavior")]
     public bool followEnabled = true;
     public bool jumpEnabled = true;
     public bool directionLookEnabled = true;
-    
+
     [Header("Health")]
     public int maxHP = 100;
     public int currentHP;
-    public TextMeshPro HealthText; // Référence au texte de la barre de vie de l'IA
+    public TextMeshPro HealthText;
 
+    private WaveManager waveManager;
     private Path path;
     private int currentWaypoint = 0;
     private Animator anim;
     private bool isGrounded = false;
     private Seeker seeker;
     private Rigidbody2D rb;
+    private float attackRange = 1.5f;
+    private int attackDamage = 10;
+    private float attackInterval = 1f; // Intervalle d'attaque en secondes
+    private bool isAttacking = false;
 
-    public void Start()
+    public void SetTarget(Transform target)
+    {
+        this.target = target;
+    }
+
+    public void SetWaveManager(WaveManager manager)
+    {
+        this.waveManager = manager;
+    }
+
+    private void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
@@ -45,13 +60,13 @@ public class EnemyAI : MonoBehaviour
 
         if (HealthText != null)
         {
-            UpdateHealthText(); // Met à jour le texte de la barre de vie
+            UpdateHealthText();
         }
         else
         {
             Debug.LogError("HealthText is not assigned in the inspector");
         }
-        
+
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
     }
 
@@ -65,13 +80,20 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdatePath()
     {
+        if (target == null)
+        {
+            FindNewTarget();
+        }
+
         if (followEnabled && TargetInDistance() && seeker.IsDone())
         {
             seeker.StartPath(rb.position, target.position, OnPathComplete);
         }
 
-        // set animator parameters
-        anim.SetBool("run", followEnabled && TargetInDistance());
+        if (anim != null)
+        {
+            anim.SetBool("run", followEnabled && TargetInDistance());
+        }
     }
 
     private void PathFollow()
@@ -81,15 +103,17 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // See if colliding with anything
+        if (currentWaypoint >= path.vectorPath.Count)
+        {
+            return;
+        }
+
         Vector3 startOffset = transform.position - new Vector3(0f, GetComponent<Collider2D>().bounds.extents.y + jumpCheckOffset, transform.position.z);
         isGrounded = Physics2D.Raycast(startOffset, -Vector3.up, 0.05f);
 
-        // Direction Calculation
-        Vector2 direction = ((Vector2)target.position - rb.position).normalized; // Always move towards the player
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         Vector2 force = direction * speed * Time.deltaTime;
 
-        // Jump
         if (jumpEnabled && isGrounded)
         {
             if (direction.y > jumpNodeHeightRequirement)
@@ -98,7 +122,13 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        rb.AddForce(force);
+        rb.velocity = new Vector2(force.x, rb.velocity.y);
+
+        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+        if (distance < nextWaypointDistance)
+        {
+            currentWaypoint++;
+        }
 
         if (directionLookEnabled)
         {
@@ -115,6 +145,11 @@ public class EnemyAI : MonoBehaviour
 
     private bool TargetInDistance()
     {
+        if (target == null)
+        {
+            return false;
+        }
+
         return Vector2.Distance(transform.position, target.position) < activateDistance;
     }
 
@@ -130,7 +165,7 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
-        UpdateHealthText(); // Met à jour le texte de la barre de vie
+        UpdateHealthText();
 
         if (currentHP <= 0)
         {
@@ -140,7 +175,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Die()
     {
-        // Ajouter des actions ici pour gérer la mort de l'IA, comme jouer une animation ou désactiver l'IA
+        waveManager.EnemyDefeated();
         Destroy(gameObject);
     }
 
@@ -153,6 +188,30 @@ public class EnemyAI : MonoBehaviour
         else
         {
             Debug.LogError("HealthText is not assigned in the inspector");
+        }
+    }
+
+    private void FindNewTarget()
+    {
+        // Always target a portal if there is an active one
+        foreach (var portal in waveManager.portals)
+        {
+            if (portal.gameObject.activeSelf)
+            {
+                target = portal;
+                return;
+            }
+        }
+
+        // If no active portals, target the player
+        target = waveManager.player;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Portal"))
+        {
+            collision.gameObject.GetComponent<Portal>().DeactivatePortal();
         }
     }
 }
