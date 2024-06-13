@@ -7,17 +7,19 @@ public class WaveManager : MonoBehaviour
 {
     public GameObject enemyPrefab;
     public GameObject portalPrefab;
+    public GameObject artefactPrefab;
     public Transform[] spawnPoints;
     public Transform[] portalSpawnPoints;
+    public Transform[] artefactSpawnPoints;
     public TextMeshProUGUI victoryText;
     public TextMeshProUGUI gameOverText;
     public Transform player;
 
     public List<Transform> portals = new List<Transform>();
-
     private int enemiesSpawned = 0;
     private int maxEnemies = 5;
     private int activePortals = 3;
+    private int SpawnedArtefacts = 0;
     private PlayerLife playerLife;
 
     void Start()
@@ -102,6 +104,16 @@ public class WaveManager : MonoBehaviour
         Debug.Log("Enemy spawned at: " + spawnPoints[spawnIndex].position);
     }
 
+    public void SpawnArtefact()
+    {
+        if (SpawnedArtefacts < 3)
+        {
+            int spawnIndex = Random.Range(0, artefactSpawnPoints.Length);
+            GameObject artefact = Instantiate(artefactPrefab, artefactSpawnPoints[spawnIndex].position, Quaternion.identity);
+            SpawnedArtefacts++;
+        }
+    }
+
     public void PortalDestroyed()
     {
         activePortals--;
@@ -114,6 +126,11 @@ public class WaveManager : MonoBehaviour
 
     public void EnemyDefeated()
     {
+        enemiesSpawned--;
+        if (enemiesSpawned==0)
+        {
+            SpawnArtefact();
+        }
         maxEnemies--;
 
         if (maxEnemies <= 0)

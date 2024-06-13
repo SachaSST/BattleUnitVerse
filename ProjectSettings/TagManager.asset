@@ -9,6 +9,8 @@ TagManager:
   - Ground
   - Enemy
   - Portal
+  - Gift
+  - Arrow
   layers:
   - Default
   - TransparentFX

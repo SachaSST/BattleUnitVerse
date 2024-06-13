@@ -214,4 +214,15 @@ public class EnemyAI : MonoBehaviour
             collision.gameObject.GetComponent<Portal>().DeactivatePortal();
         }
     }
+
+
+//    private void OnTriggerEnter2D(Collider2D other)
+//    {
+//        if (other.gameObject.tag=="Arrow")
+//        {
+//            TakeDamage(50);
+//        }
+//    }
+//
+//	
 }

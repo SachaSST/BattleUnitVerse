@@ -480,7 +480,8 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
-  attackPoint: {fileID: 0}
+  attackPointRight: {fileID: 0}
+  attackPointLeft: {fileID: 0}
   jumpableGround:
     serializedVersion: 2
     m_Bits: 8

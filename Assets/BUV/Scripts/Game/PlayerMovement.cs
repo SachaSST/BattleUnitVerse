@@ -36,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
+    
+    
 
     private void Start()
     {
@@ -100,7 +102,6 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimationUpdate();
         WallSlide();
     }
-
     private void PlaceGround()
     {
         if ((-13.11f < transform.position.x && transform.position.x < -7.07f) &&
@@ -136,6 +137,11 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             Jumps = 2; // Réinitialise les sauts lorsque le joueur touche le sol.
+        }
+        else if (other.gameObject.tag == "Gift")
+        {
+            Debug.Log("Récompense !");
+            Destroy(other.gameObject);
         }
     }
 
@@ -237,5 +243,7 @@ public class PlayerMovement : MonoBehaviour
             Vector2 force = direction.normalized * 1000f; 
             rb.AddForce(force);
         }
+        
     }
+    
 }
