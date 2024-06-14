@@ -494,6 +494,9 @@ MonoBehaviour:
   Floor: {fileID: 3945467995415066412, guid: 97715c8620d9549859b346459593f3a1, type: 3}
   jumpForce: 12
   moveSpeed: 7
+  CapaciteSpeciale_: AttaqueTonnerre
+  AttaqueT: {fileID: 8865304017875908220, guid: a7736d0f28330aad5837b9577df3bb46, type: 3}
+  ulti: 0
 --- !u!114 &-3355849803165533946
 MonoBehaviour:
   m_ObjectHideFlags: 0

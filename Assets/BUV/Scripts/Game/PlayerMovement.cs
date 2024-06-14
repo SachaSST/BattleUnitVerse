@@ -36,6 +36,11 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
+
+	public string CapaciteSpeciale_;
+    private bool SpecialIsUSed = false;
+    [SerializeField] private GameObject AttaqueT;
+    public bool ulti=false;
     
     
 
@@ -51,6 +56,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float dirX = Input.GetAxis("Horizontal"); // -1 0 1
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+        
 
         if (IsGrounded())
         {
@@ -94,6 +100,11 @@ public class PlayerMovement : MonoBehaviour
             timeSinceLastGround = 0f;
         }
 
+		if (Input.GetKeyDown(KeyCode.E) && SpecialIsUSed==false /*&& PlayerLife.currentHP<=25*/)
+        {
+            CapaciteSpeciale();
+        }
+
         if (Input.GetKeyDown(KeyCode.F))
         {
             Attack();
@@ -102,6 +113,44 @@ public class PlayerMovement : MonoBehaviour
         UpdateAnimationUpdate();
         WallSlide();
     }
+
+	private void CapaciteSpeciale()
+    {
+        if (CapaciteSpeciale_=="Saut") 
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            SpecialIsUSed=true;
+        }
+        if (CapaciteSpeciale_=="AttaqueTonnerre")
+        {
+            float dirX2 = Input.GetAxis("Horizontal"); // -1 0 1
+            if (dirX2==0)
+            {
+                Vector3 position1=new Vector3(transform.position.x-7f, transform.position.y, -5f);
+                Vector3 position2=new Vector3(transform.position.x+7f, transform.position.y, -5f);
+                GameObject a= Instantiate(AttaqueT, position1, Quaternion.identity);
+                GameObject b= Instantiate(AttaqueT, position2, Quaternion.identity);
+                Destroy(a,0.5f);
+                Destroy(b,0.5f);
+            }
+            else
+            {
+                Vector3 positionAttaque=new Vector3(transform.position.x+(15f*dirX2), transform.position.y, -5f);
+                GameObject a= Instantiate(AttaqueT, positionAttaque, Quaternion.identity);
+                Destroy(a,0.5f);
+                //SpecialIsUSed=true;
+            }
+            
+        }
+        if (CapaciteSpeciale_=="Teleportation")
+        {
+            float dirX2 = Input.GetAxis("Horizontal"); // -1 0 1
+            Vector3 Teleport=new Vector3(transform.position.x+(10f*dirX2), transform.position.y, transform.position.z);
+            transform.position=Teleport;
+            SpecialIsUSed=true;
+        }
+    }
+
     private void PlaceGround()
     {
         if ((-13.11f < transform.position.x && transform.position.x < -7.07f) &&

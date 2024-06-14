@@ -215,14 +215,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag=="Arrow")
+        {
+            Die();
+        }
+    }
 
-//    private void OnTriggerEnter2D(Collider2D other)
-//    {
-//        if (other.gameObject.tag=="Arrow")
-//        {
-//            TakeDamage(50);
-//        }
-//    }
-//
-//	
 }

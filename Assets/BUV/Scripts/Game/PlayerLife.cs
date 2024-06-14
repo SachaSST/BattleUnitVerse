@@ -101,6 +101,16 @@ public class PlayerLife : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag=="Arrow")
+        {
+            // commenté car ça le tue lui-même
+            //Die();
+            Debug.Log("Ouille");
+        }
+    }
+
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
