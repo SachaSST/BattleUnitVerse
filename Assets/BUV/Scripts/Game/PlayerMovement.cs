@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun
 {
     private Rigidbody2D rb;
     private Animator anim;
@@ -37,12 +38,13 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallSliding;
     private float wallSlidingSpeed = 2f;
 
-	public string CapaciteSpeciale_;
+    public string CapaciteSpeciale_;
     private bool SpecialIsUSed = false;
     [SerializeField] private GameObject AttaqueT;
-    public bool ulti=false;
-    
-    
+    public bool ulti = false;
+
+    [SerializeField] private AudioClip attackSound; // Ajout du clip audio d'attaque
+    private AudioSource audioSource; // Référence à l'AudioSource
 
     private void Start()
     {
@@ -50,13 +52,34 @@ public class PlayerMovement : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        audioSource = gameObject.AddComponent<AudioSource>(); // Ajoute un AudioSource au GameObject
+
+        if (PhotonNetwork.IsConnected && !photonView.IsMine)
+        {
+            rb.isKinematic = true; // Désactive la physique pour les autres joueurs en ligne
+        }
     }
 
     private void Update()
     {
+        if (PhotonNetwork.IsConnected)
+        {
+            if (!photonView.IsMine) return; // Assure que seules les actions du joueur local sont exécutées en ligne
+
+            HandleMovement(); // Gère le mouvement du joueur en ligne
+            HandleActions(); // Gère les autres actions du joueur en ligne (attaque, compétences spéciales, etc.)
+        }
+        else
+        {
+            HandleMovement(); // Gère le mouvement du joueur hors ligne
+            HandleActions(); // Gère les autres actions du joueur hors ligne (attaque, compétences spéciales, etc.)
+        }
+    }
+
+    private void HandleMovement()
+    {
         float dirX = Input.GetAxis("Horizontal"); // -1 0 1
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
-        
 
         if (IsGrounded())
         {
@@ -70,14 +93,21 @@ public class PlayerMovement : MonoBehaviour
             jumpForce = 18;
         }
 
-        if (Input.GetButtonDown("Jump") && Jumps > 1)
+        if (Input.GetButtonDown("Jump") && Jumps > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             Jumps--;
         }
 
+        UpdateAnimationUpdate();
+        WallSlide();
+    }
+
+    private void HandleActions()
+    {
         // Mettre à jour le temps écoulé depuis le dernier mur placé.
-        if (timeSinceLastWall < regularCooldown) {
+        if (timeSinceLastWall < regularCooldown)
+        {
             timeSinceLastWall += Time.deltaTime;
         }
 
@@ -100,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             timeSinceLastGround = 0f;
         }
 
-		if (Input.GetKeyDown(KeyCode.E) && SpecialIsUSed==false /*&& PlayerLife.currentHP<=25*/)
+        if (Input.GetKeyDown(KeyCode.E) && SpecialIsUSed == false)
         {
             CapaciteSpeciale();
         }
@@ -109,75 +139,69 @@ public class PlayerMovement : MonoBehaviour
         {
             Attack();
         }
-
-        UpdateAnimationUpdate();
-        WallSlide();
     }
 
-	private void CapaciteSpeciale()
+    private void CapaciteSpeciale()
     {
-        if (CapaciteSpeciale_=="Saut") 
+        if (CapaciteSpeciale_ == "Saut")
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            SpecialIsUSed=true;
+            SpecialIsUSed = true;
         }
-        if (CapaciteSpeciale_=="AttaqueTonnerre")
+        if (CapaciteSpeciale_ == "AttaqueTonnerre")
         {
             float dirX2 = Input.GetAxis("Horizontal"); // -1 0 1
-            if (dirX2==0)
+            if (dirX2 == 0)
             {
-                Vector3 position1=new Vector3(transform.position.x-7f, transform.position.y, -5f);
-                Vector3 position2=new Vector3(transform.position.x+7f, transform.position.y, -5f);
-                GameObject a= Instantiate(AttaqueT, position1, Quaternion.identity);
-                GameObject b= Instantiate(AttaqueT, position2, Quaternion.identity);
-                Destroy(a,0.5f);
-                Destroy(b,0.5f);
+                Vector3 position1 = new Vector3(transform.position.x - 7f, transform.position.y, -5f);
+                Vector3 position2 = new Vector3(transform.position.x + 7f, transform.position.y, -5f);
+                GameObject a = Instantiate(AttaqueT, position1, Quaternion.identity);
+                GameObject b = Instantiate(AttaqueT, position2, Quaternion.identity);
+                Destroy(a, 0.5f);
+                Destroy(b, 0.5f);
             }
             else
             {
-                Vector3 positionAttaque=new Vector3(transform.position.x+(15f*dirX2), transform.position.y, -5f);
-                GameObject a= Instantiate(AttaqueT, positionAttaque, Quaternion.identity);
-                Destroy(a,0.5f);
-                //SpecialIsUSed=true;
+                Vector3 positionAttaque = new Vector3(transform.position.x + (15f * dirX2), transform.position.y, -5f);
+                GameObject a = Instantiate(AttaqueT, positionAttaque, Quaternion.identity);
+                Destroy(a, 0.5f);
             }
-            
         }
-        if (CapaciteSpeciale_=="Teleportation")
+        if (CapaciteSpeciale_ == "Teleportation")
         {
             float dirX2 = Input.GetAxis("Horizontal"); // -1 0 1
-            Vector3 Teleport=new Vector3(transform.position.x+(10f*dirX2), transform.position.y, transform.position.z);
-            transform.position=Teleport;
-            SpecialIsUSed=true;
+            Vector3 Teleport = new Vector3(transform.position.x + (10f * dirX2), transform.position.y, transform.position.z);
+            transform.position = Teleport;
+            SpecialIsUSed = true;
         }
     }
 
     private void PlaceGround()
     {
         if ((-13.11f < transform.position.x && transform.position.x < -7.07f) &&
-            (-2.18f < transform.position.y && transform.position.y < 2.15f)) //si le personnage est à gauche de la plateforme (wavemode)
+            (-2.18f < transform.position.y && transform.position.y < 2.15f))
         {
             Vector3 groundPosition = new Vector3(-10.82f, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
-            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity); //plateforme s'alligne automatiquement 
-            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
+            Destroy(ground, 1f);
         }
-        else if ((7.22f<transform.position.x && transform.position.x<13.35f)  && (-2.18f < transform.position.y && transform.position.y< 2.15f)) //si le personnage est à droite de la plateforme (wavemode)
+        else if ((7.22f < transform.position.x && transform.position.x < 13.35f) && (-2.18f < transform.position.y && transform.position.y < 2.15f))
         {
             Vector3 groundPosition = new Vector3(10.95141f, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
-            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity); //plateforme s'alligne automatiquement
-            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
-        }
-        else if (IsGrounded()) // si le personnage est au sol
-        {
-            // le sol se crée 0.50y plus haut
-            Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2+0.50f, transform.position.z);
             GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
-            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+            Destroy(ground, 1f);
         }
-        else // si le personnage n'est pas au sol
+        else if (IsGrounded())
+        {
+            Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2 + 0.50f, transform.position.z);
+            GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
+            Destroy(ground, 1f);
+        }
+        else
         {
             Vector3 groundPosition = new Vector3(transform.position.x, transform.position.y - coll.bounds.size.y / 2, transform.position.z);
             GameObject ground = Instantiate(Floor, groundPosition, Quaternion.identity);
-            Destroy(ground, 1f); // Le sol disparaît après 1 seconde.
+            Destroy(ground, 1f);
         }
     }
 
@@ -185,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            Jumps = 2; // Réinitialise les sauts lorsque le joueur touche le sol.
+            Jumps = 2;
         }
         else if (other.gameObject.tag == "Gift")
         {
@@ -196,10 +220,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlaceWall()
     {
-        // Ajuste la direction de placement du mur basée sur où le joueur regarde.
         Vector3 wallPosition = transform.position + new Vector3(sprite.flipX ? 2f : -2f, 0.27f, 0);
         GameObject wall = Instantiate(wallPrefab, wallPosition, Quaternion.identity);
-        Destroy(wall, 2f); // Le mur disparaît après 2 secondes.
+        Destroy(wall, 2f);
     }
 
     private void Attack()
@@ -210,11 +233,23 @@ public class PlayerMovement : MonoBehaviour
 
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
+            if (enemy.GetComponent<EnemyAI>() != null)
+            {
+                enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
+            }
+            else if (enemy.GetComponent<PlayerLife>() != null)
+            {
+                enemy.GetComponent<PlayerLife>().TakeDamage(attackDamage);
+            }
 
             Vector2 direction = enemy.transform.position - transform.position;
             direction.Normalize();
             enemy.GetComponent<Rigidbody2D>().AddForce(direction * 500f);
+        }
+
+        if (attackSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(attackSound);
         }
     }
 
@@ -252,10 +287,9 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isWalled()
     {
-        // Vérifie si le personnage est proche d'un mur soit à gauche, soit à droite.
         bool walledLeft = Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
         bool walledRight = Physics2D.OverlapCircle(wallCheck2.position, 0.2f, wallLayer);
-    
+
         return walledLeft || walledRight;
     }
 
@@ -287,12 +321,9 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Bullet")
         {
             Debug.Log("Le joueur est mort");
-            //Die();// ajoute
             Vector2 direction = rb.transform.position - collision.gameObject.transform.position;
-            Vector2 force = direction.normalized * 1000f; 
+            Vector2 force = direction.normalized * 1000f;
             rb.AddForce(force);
         }
-        
     }
-    
 }
