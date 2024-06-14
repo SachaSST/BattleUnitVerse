@@ -14,6 +14,7 @@ public class WaveManager : MonoBehaviour
     public TextMeshProUGUI victoryText;
     public TextMeshProUGUI gameOverText;
     public Transform player;
+    public AudioClip victoryMusic; // Ajout du clip audio de victoire
 
     public List<Transform> portals = new List<Transform>();
     private int enemiesSpawned = 0;
@@ -21,10 +22,12 @@ public class WaveManager : MonoBehaviour
     private int activePortals = 3;
     private int SpawnedArtefacts = 0;
     private PlayerLife playerLife;
+    private AudioSource audioSource; // Référence à l'AudioSource
 
     void Start()
     {
         playerLife = player.GetComponent<PlayerLife>();
+        audioSource = gameObject.AddComponent<AudioSource>(); // Ajoute un AudioSource au GameObject
 
         if (victoryText != null)
         {
@@ -127,7 +130,7 @@ public class WaveManager : MonoBehaviour
     public void EnemyDefeated()
     {
         enemiesSpawned--;
-        if (enemiesSpawned==0)
+        if (enemiesSpawned == 0)
         {
             SpawnArtefact();
         }
@@ -145,6 +148,11 @@ public class WaveManager : MonoBehaviour
         if (victoryText != null)
         {
             victoryText.gameObject.SetActive(true);
+        }
+        if (victoryMusic != null && audioSource != null)
+        {
+            audioSource.clip = victoryMusic;
+            audioSource.Play();
         }
     }
 
