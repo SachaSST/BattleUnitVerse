@@ -139,6 +139,11 @@ public class PlayerMovement : MonoBehaviourPun
         {
             Attack();
         }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            KillOpponent();
+        }
     }
 
     private void CapaciteSpeciale()
@@ -229,27 +234,71 @@ public class PlayerMovement : MonoBehaviourPun
     {
         Transform attackPoint = sprite.flipX ? attackPointLeft : attackPointRight;
 
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+        Collider2D[] hitTargets = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider2D target in hitTargets)
         {
-            if (enemy.GetComponent<EnemyAI>() != null)
+            if (target.GetComponent<EnemyAI>() != null)
             {
-                enemy.GetComponent<EnemyAI>().TakeDamage(attackDamage);
+                target.GetComponent<EnemyAI>().TakeDamage(attackDamage);
             }
-            else if (enemy.GetComponent<PlayerLife>() != null)
+            else if (target.GetComponent<PlayerLife>() != null)
             {
-                enemy.GetComponent<PlayerLife>().TakeDamage(attackDamage);
+                target.GetComponent<PlayerLife>().TakeDamage(attackDamage);
             }
 
-            Vector2 direction = enemy.transform.position - transform.position;
+            Vector2 direction = target.transform.position - transform.position;
             direction.Normalize();
-            enemy.GetComponent<Rigidbody2D>().AddForce(direction * 500f);
+            target.GetComponent<Rigidbody2D>().AddForce(direction * 500f);
+        }
+
+        if (PhotonNetwork.IsConnected)
+        {
+            PhotonView opponentView = GetOpponentPhotonView();
+            if (opponentView != null)
+            {
+                opponentView.RPC("TakeDamage", RpcTarget.All, attackDamage);
+            }
         }
 
         if (attackSound != null && audioSource != null)
         {
             audioSource.PlayOneShot(attackSound);
+        }
+    }
+
+    private PhotonView GetOpponentPhotonView()
+    {
+        foreach (var player in PhotonNetwork.PlayerListOthers)
+        {
+            GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject obj in playerObjects)
+            {
+                PhotonView view = obj.GetComponent<PhotonView>();
+                if (view != null && view.Owner == player)
+                {
+                    return view;
+                }
+            }
+        }
+        return null;
+    }
+
+    [PunRPC]
+    public void TakeDamage(int damage)
+    {
+        if (photonView.IsMine)
+        {
+            GetComponent<PlayerLife>().TakeDamage(damage);
+        }
+    }
+
+    private void KillOpponent()
+    {
+        PhotonView opponentView = GetOpponentPhotonView();
+        if (opponentView != null)
+        {
+            opponentView.RPC("SetGameOver", RpcTarget.All);
         }
     }
 
@@ -272,12 +321,12 @@ public class PlayerMovement : MonoBehaviourPun
         if (dirX > 0f)
         {
             anim.SetBool("running", true);
-            sprite.flipX = true;
+            sprite.flipX = false;
         }
         else if (dirX < 0f)
         {
             anim.SetBool("running", true);
-            sprite.flipX = false;
+            sprite.flipX = true;
         }
         else
         {
