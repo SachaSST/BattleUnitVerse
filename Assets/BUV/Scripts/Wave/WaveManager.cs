@@ -11,7 +11,7 @@ public class WaveManager : MonoBehaviour
     public Transform[] spawnPoints;
     public Transform[] portalSpawnPoints;
     public Transform[] artefactSpawnPoints;
-    public TextMeshProUGUI victoryText;
+    public TextMeshPro victoryText;
     public TextMeshProUGUI gameOverText;
     public Transform player;
     public AudioClip victoryMusic; // Ajout du clip audio de victoire
@@ -91,7 +91,7 @@ public class WaveManager : MonoBehaviour
         {
             SpawnEnemy();
             enemiesSpawned++;
-            yield return new WaitForSeconds(10f); // Attendre 10 secondes avant de faire apparaître une nouvelle IA
+            yield return new WaitForSeconds(4f); // Attendre 10 secondes avant de faire apparaître une nouvelle IA
         }
 
         Debug.Log("Maximum number of enemies spawned. Stopping.");

@@ -19,6 +19,8 @@ public class PlayerLife : MonoBehaviourPun
     public TextMeshPro NombreDeViesTexte;
     public TextMeshPro HealthText; // Référence au texte de la barre de vie
     public TextMeshPro GameOverText; // Référence au texte "Game Over"
+    public TextMeshPro VictoryText; // Référence au texte de victoire
+
 
     private bool isDead = false; // Variable pour suivre l'état de mort du joueur
 
@@ -38,13 +40,23 @@ public class PlayerLife : MonoBehaviourPun
 
         if (GameOverText != null)
         {
-            GameOverText.gameObject.SetActive(false); // Assurez-vous que le texte "Game Over" est désactivé au début
+            GameOverText.gameObject.SetActive(false); 
         }
         else
         {
             Debug.LogError("GameOverText is not assigned in the inspector");
         }
+
+        if (VictoryText != null)
+        {
+            VictoryText.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("VictoryText is not assigned in the inspector");
+        }
     }
+
 
     // Update est appelé une fois par frame
     void Update()
@@ -164,6 +176,9 @@ public class PlayerLife : MonoBehaviourPun
         if (GameOverText != null)
         {
             GameOverText.gameObject.SetActive(true); // Affiche le texte "Game Over"
+            GameOverText.alignment = TextAlignmentOptions.Center; // Centre le texte
+            RectTransform rectTransform = GameOverText.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
         }
         // Réinitialiser la caméra au point de départ
         _camera.transform.position = new Vector3(startPos.x, startPos.y, _camera.transform.position.z);
@@ -176,6 +191,28 @@ public class PlayerLife : MonoBehaviourPun
         Nbdevie = 0; // Définir le nombre de vies à 0
         GameOver();
     }
+    
+    public void CheckVictory()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if (enemies.Length == 0)
+        {
+            ShowVictoryMessage();
+        }
+    }
+
+    private void ShowVictoryMessage()
+    {
+        if (VictoryText != null)
+        {
+            VictoryText.gameObject.SetActive(true); // Affiche le texte "Victory"
+            VictoryText.alignment = TextAlignmentOptions.Center; // Centre le texte
+            RectTransform rectTransform = VictoryText.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
+        }
+        // Désactiver le joueur ou d'autres actions supplémentaires peuvent être ajoutées ici
+    }
+
 
     [PunRPC]
     public void SyncDie()
