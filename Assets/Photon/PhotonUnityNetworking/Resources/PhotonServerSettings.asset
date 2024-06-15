@@ -47,6 +47,7 @@ MonoBehaviour:
   - UpdateHealthTextRPC
   - SyncHealthText
   - ShowVictoryDefeat
+  - SyncGameOver
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

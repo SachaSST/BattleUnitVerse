@@ -21,7 +21,6 @@ public class PlayerLife : MonoBehaviourPun
     public TextMeshPro GameOverText; // Référence au texte "Game Over"
     public TextMeshPro VictoryText; // Référence au texte de victoire
 
-
     private bool isDead = false; // Variable pour suivre l'état de mort du joueur
 
     // Start est appelé avant la première frame update
@@ -56,7 +55,6 @@ public class PlayerLife : MonoBehaviourPun
             Debug.LogError("VictoryText is not assigned in the inspector");
         }
     }
-
 
     // Update est appelé une fois par frame
     void Update()
@@ -93,7 +91,14 @@ public class PlayerLife : MonoBehaviourPun
             Nbdevie--; // Décrémente le nombre de vies
             NombreDeViesTexte.text = Nbdevie + " vies";
             anim.SetTrigger("death");
-            GameOver();
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("SyncGameOver", RpcTarget.All); // Synchronise la fin de jeu avec tous les clients
+            }
+            else
+            {
+                SyncGameOver();
+            }
         }
     }
 
@@ -141,7 +146,10 @@ public class PlayerLife : MonoBehaviourPun
         if (currentHP <= 0)
         {
             Die(); // Appelle la méthode Die localement
-            photonView.RPC("SyncDie", RpcTarget.Others); // Synchronise la mort avec les autres clients
+            if (PhotonNetwork.IsConnected)
+            {
+                photonView.RPC("SyncDie", RpcTarget.Others); // Synchronise la mort avec les autres clients
+            }
         }
         if (PhotonNetwork.IsConnected)
         {
@@ -171,7 +179,31 @@ public class PlayerLife : MonoBehaviourPun
         }
     }
 
-    private void GameOver()
+    [PunRPC]
+    public void SyncGameOver()
+    {
+        if (photonView.IsMine)
+        {
+            ShowGameOverMessage();
+        }
+        else
+        {
+            ShowVictoryMessage();
+        }
+    }
+
+    private void ShowVictoryMessage()
+    {
+        if (VictoryText != null)
+        {
+            VictoryText.gameObject.SetActive(true); // Affiche le texte "Victory"
+            VictoryText.alignment = TextAlignmentOptions.Center; // Centre le texte
+            RectTransform rectTransform = VictoryText.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
+        }
+    }
+
+    private void ShowGameOverMessage()
     {
         if (GameOverText != null)
         {
@@ -189,7 +221,7 @@ public class PlayerLife : MonoBehaviourPun
     public void SetGameOver()
     {
         Nbdevie = 0; // Définir le nombre de vies à 0
-        GameOver();
+        ShowGameOverMessage();
     }
     
     public void CheckVictory()
@@ -200,19 +232,6 @@ public class PlayerLife : MonoBehaviourPun
             ShowVictoryMessage();
         }
     }
-
-    private void ShowVictoryMessage()
-    {
-        if (VictoryText != null)
-        {
-            VictoryText.gameObject.SetActive(true); // Affiche le texte "Victory"
-            VictoryText.alignment = TextAlignmentOptions.Center; // Centre le texte
-            RectTransform rectTransform = VictoryText.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
-        }
-        // Désactiver le joueur ou d'autres actions supplémentaires peuvent être ajoutées ici
-    }
-
 
     [PunRPC]
     public void SyncDie()

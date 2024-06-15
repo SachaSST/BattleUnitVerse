@@ -186,6 +186,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3800246071858173915, guid: 85263e7cedd5847f6a3da79ae0529d2c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5081371009837809304, guid: 85263e7cedd5847f6a3da79ae0529d2c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -290,6 +294,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3094067918730978668, guid: 85263e7cedd5847f6a3da79ae0529d2c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 3800246071858173915, guid: 85263e7cedd5847f6a3da79ae0529d2c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
     - targetCorrespondingSourceObject: {fileID: 1353009448505613094, guid: 85263e7cedd5847f6a3da79ae0529d2c, type: 3}
