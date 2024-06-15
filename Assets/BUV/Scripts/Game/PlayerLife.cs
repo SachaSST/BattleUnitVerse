@@ -1,8 +1,9 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using Photon.Pun;
 
-public class PlayerLife : MonoBehaviour
+public class PlayerLife : MonoBehaviourPun
 {
     private Vector2 startPos; // pour revenir au début du jeu
     private Vector4 starta; // garde en mémoire les dimensions du perso 
@@ -18,6 +19,8 @@ public class PlayerLife : MonoBehaviour
     public TextMeshPro NombreDeViesTexte;
     public TextMeshPro HealthText; // Référence au texte de la barre de vie
     public TextMeshPro GameOverText; // Référence au texte "Game Over"
+
+    private bool isDead = false; // Variable pour suivre l'état de mort du joueur
 
     // Start est appelé avant la première frame update
     void Start()
@@ -61,6 +64,10 @@ public class PlayerLife : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return; // Si le joueur est déjà mort, ne rien faire
+
+        isDead = true; // Marquer le joueur comme mort
+
         if (Nbdevie > 1)
         {
             Nbdevie--; // Décrémente le nombre de vies
@@ -90,6 +97,7 @@ public class PlayerLife : MonoBehaviour
             rb.simulated = true; // Redonne les ombres du perso
             currentHP = maxHP; // Réinitialise les HP
             UpdateHealthText(); // Met à jour le texte de la barre de vie
+            isDead = false; // Réinitialise l'état de mort
         }
     }
 
@@ -103,7 +111,7 @@ public class PlayerLife : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag=="Arrow")
+        if (other.gameObject.tag == "Arrow")
         {
             // commenté car ça le tue lui-même
             //Die();
@@ -113,12 +121,15 @@ public class PlayerLife : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        if (isDead) return; // Ne rien faire si déjà mort
+
         currentHP -= damage;
         UpdateHealthText(); // Met à jour le texte de la barre de vie
 
         if (currentHP <= 0)
         {
-            Die();
+            Die(); // Appelle la méthode Die localement
+            photonView.RPC("SyncDie", RpcTarget.Others); // Synchronise la mort avec les autres clients
         }
     }
 
@@ -150,5 +161,14 @@ public class PlayerLife : MonoBehaviour
     {
         Nbdevie = 0; // Définir le nombre de vies à 0
         GameOver();
+    }
+
+    [PunRPC]
+    public void SyncDie()
+    {
+        if (!photonView.IsMine)
+        {
+            Die();
+        }
     }
 }

@@ -257,7 +257,7 @@ public class PlayerMovement : MonoBehaviourPun
             PhotonView opponentView = GetOpponentPhotonView();
             if (opponentView != null)
             {
-                opponentView.RPC("TakeDamage", RpcTarget.All, attackDamage);
+                opponentView.RPC("TakeDamage", RpcTarget.Others, attackDamage);
             }
         }
 
