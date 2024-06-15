@@ -131,6 +131,10 @@ public class PlayerLife : MonoBehaviourPun
             Die(); // Appelle la méthode Die localement
             photonView.RPC("SyncDie", RpcTarget.Others); // Synchronise la mort avec les autres clients
         }
+        if (PhotonNetwork.IsConnected)
+        {
+            photonView.RPC("SyncHealthText", RpcTarget.Others, currentHP);
+        }
     }
 
     private void UpdateHealthText()
@@ -142,6 +146,16 @@ public class PlayerLife : MonoBehaviourPun
         else
         {
             Debug.LogError("HealthText is not assigned in the inspector");
+        }
+    }
+
+    [PunRPC]
+    public void SyncHealthText(int syncedHP)
+    {
+        currentHP = syncedHP;
+        if (HealthText != null)
+        {
+            HealthText.text = "HP: " + currentHP + "/" + maxHP;
         }
     }
 
