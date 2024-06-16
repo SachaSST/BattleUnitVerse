@@ -27,8 +27,6 @@ public class EnemyAI : MonoBehaviour
     [Header("Health")]
     public int maxHP = 100;
     public int currentHP;
-    public TextMeshPro HealthText;
-
     private WaveManager waveManager;
     private Path path;
     private int currentWaypoint = 0;
@@ -57,16 +55,6 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         currentHP = maxHP;
-
-        if (HealthText != null)
-        {
-            UpdateHealthText();
-        }
-        else
-        {
-            Debug.LogError("HealthText is not assigned in the inspector");
-        }
-
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
     }
 
@@ -165,8 +153,6 @@ public class EnemyAI : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
-        UpdateHealthText();
-
         if (currentHP <= 0)
         {
             Die();
@@ -177,18 +163,6 @@ public class EnemyAI : MonoBehaviour
     {
         waveManager.EnemyDefeated();
         Destroy(gameObject);
-    }
-
-    private void UpdateHealthText()
-    {
-        if (HealthText != null)
-        {
-            HealthText.text = "HP: " + currentHP + "/" + maxHP;
-        }
-        else
-        {
-            Debug.LogError("HealthText is not assigned in the inspector");
-        }
     }
 
     private void FindNewTarget()

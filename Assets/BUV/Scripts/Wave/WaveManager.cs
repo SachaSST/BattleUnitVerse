@@ -11,7 +11,7 @@ public class WaveManager : MonoBehaviour
     public Transform[] spawnPoints;
     public Transform[] portalSpawnPoints;
     public Transform[] artefactSpawnPoints;
-    public TextMeshPro victoryText;
+    public TextMeshProUGUI victoryText;
     public TextMeshProUGUI gameOverText;
     public Transform player;
     public AudioClip victoryMusic; // Ajout du clip audio de victoire
@@ -23,6 +23,10 @@ public class WaveManager : MonoBehaviour
     private int SpawnedArtefacts = 0;
     private PlayerLife playerLife;
     private AudioSource audioSource; // Référence à l'AudioSource
+
+    //prefab victory canvas
+    public GameObject victoryCanvas;
+    public GameObject GameOverCanvas;
 
     void Start()
     {
@@ -147,6 +151,7 @@ public class WaveManager : MonoBehaviour
         Debug.Log("Victory!");
         if (victoryText != null)
         {
+            victoryCanvas.SetActive(true);
             victoryText.gameObject.SetActive(true);
         }
         if (victoryMusic != null && audioSource != null)
@@ -159,8 +164,11 @@ public class WaveManager : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
+        Debug.Log(playerLife.GetNbdevie());
         if (gameOverText != null)
         {
+            Debug.Log(playerLife.GetNbdevie());
+            GameOverCanvas.SetActive(true);
             gameOverText.gameObject.SetActive(true);
         }
         if (playerLife != null)

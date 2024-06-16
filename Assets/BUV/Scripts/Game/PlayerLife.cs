@@ -18,8 +18,10 @@ public class PlayerLife : MonoBehaviourPun
 
     public TextMeshPro NombreDeViesTexte;
     public TextMeshPro HealthText; // Référence au texte de la barre de vie
-    public TextMeshPro GameOverText; // Référence au texte "Game Over"
-    public TextMeshPro VictoryText; // Référence au texte de victoire
+    public TextMeshProUGUI GameOverText; // Référence au texte "Game Over"
+    public TextMeshProUGUI VictoryText; // Référence au texte de victoire
+
+    public GameObject GameOverCanvas;
 
     private bool isDead = false; // Variable pour suivre l'état de mort du joueur
 
@@ -197,9 +199,7 @@ public class PlayerLife : MonoBehaviourPun
         if (VictoryText != null)
         {
             VictoryText.gameObject.SetActive(true); // Affiche le texte "Victory"
-            VictoryText.alignment = TextAlignmentOptions.Center; // Centre le texte
-            RectTransform rectTransform = VictoryText.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
+
         }
     }
 
@@ -207,10 +207,8 @@ public class PlayerLife : MonoBehaviourPun
     {
         if (GameOverText != null)
         {
-            GameOverText.gameObject.SetActive(true); // Affiche le texte "Game Over"
-            GameOverText.alignment = TextAlignmentOptions.Center; // Centre le texte
-            RectTransform rectTransform = GameOverText.GetComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero; // Positionne le texte au centre de l'écran
+            GameOverCanvas.SetActive(true);
+            GameOverText.gameObject.SetActive(true);
         }
         // Réinitialiser la caméra au point de départ
         _camera.transform.position = new Vector3(startPos.x, startPos.y, _camera.transform.position.z);
@@ -240,5 +238,10 @@ public class PlayerLife : MonoBehaviourPun
         {
             Die();
         }
+    }
+
+    public int GetNbdevie()
+    {
+        return Nbdevie;
     }
 }
