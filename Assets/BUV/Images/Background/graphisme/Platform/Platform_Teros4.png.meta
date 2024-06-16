@@ -182,7 +182,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Platform_Teros4_0: 3973080926472239688
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
