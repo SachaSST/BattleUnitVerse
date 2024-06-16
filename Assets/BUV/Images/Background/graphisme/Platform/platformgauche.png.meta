@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 65e728bc7e5e74110bf43a3538614f61
+guid: 2dec64743df724ee9a21b92406ed9557
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3558870115296949553
-    second: Dadou Gaming Recupere_0
+      213: 5441651991547874432
+    second: platformgauche_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -152,13 +152,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Dadou Gaming Recupere_0
+      name: platformgauche_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 3840
-        height: 2160
+        width: 679
+        height: 204
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fcac8ff5c7a5c9ec0800000000000000
-      internalID: -3558870115296949553
+      spriteID: 08c028bb7a1a48b40800000000000000
+      internalID: 5441651991547874432
       vertices: []
       indices: 
       edges: []
@@ -182,8 +182,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Dadou Gaming Recupere_0: -3558870115296949553
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
