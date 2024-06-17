@@ -53,6 +53,7 @@ public class PlayerMovement : MonoBehaviourPun
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         audioSource = gameObject.AddComponent<AudioSource>(); // Ajoute un AudioSource au GameObject
+        enemyLayer = LayerMask.GetMask("Enemy");
 
         if (PhotonNetwork.IsConnected && !photonView.IsMine)
         {
@@ -132,12 +133,17 @@ public class PlayerMovement : MonoBehaviourPun
 
         if (Input.GetKeyDown(KeyCode.E) && SpecialIsUSed == false)
         {
+            Debug.Log("E key pressed");
+
             CapaciteSpeciale();
         }
 
         if (Input.GetKeyDown(KeyCode.F))
         {
+            Debug.Log("F key pressed");
+            
             Attack();
+
         }
 
         if (Input.GetKeyDown(KeyCode.O))
@@ -233,17 +239,23 @@ public class PlayerMovement : MonoBehaviourPun
     private void Attack()
     {
         Transform attackPoint = sprite.flipX ? attackPointLeft : attackPointRight;
+    
+        Debug.Log("Attack point position: " + attackPoint.position);
 
         Collider2D[] hitTargets = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+
+        Debug.Log("Number of targets hit: " + hitTargets.Length);
 
         foreach (Collider2D target in hitTargets)
         {
             if (target.GetComponent<EnemyAI>() != null)
             {
+                Debug.Log("Enemy hit: " + target.name);
                 target.GetComponent<EnemyAI>().TakeDamage(attackDamage);
             }
             else if (target.GetComponent<PlayerLife>() != null)
             {
+                Debug.Log("Player hit: " + target.name);
                 target.GetComponent<PlayerLife>().TakeDamage(attackDamage);
             }
 

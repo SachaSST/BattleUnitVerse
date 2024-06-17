@@ -75,6 +75,7 @@ public class WaveManager : MonoBehaviour
 
         SpawnPortals();
         StartCoroutine(SpawnEnemies());
+        StartCoroutine(CheckGameOverCondition()); // Start checking for game over condition
     }
 
     void SpawnPortals()
@@ -164,16 +165,27 @@ public class WaveManager : MonoBehaviour
     void GameOver()
     {
         Debug.Log("Game Over!");
-        Debug.Log(playerLife.GetNbdevie());
         if (gameOverText != null)
         {
-            Debug.Log(playerLife.GetNbdevie());
             GameOverCanvas.SetActive(true);
             gameOverText.gameObject.SetActive(true);
         }
         if (playerLife != null)
         {
             playerLife.SetGameOver();
+        }
+    }
+
+    IEnumerator CheckGameOverCondition()
+    {
+        while (true)
+        {
+            if (activePortals <= 0 || (playerLife != null && playerLife.GetNbdevie() <= 0))
+            {
+                GameOver();
+                yield break; // Exit the coroutine once game over is triggered
+            }
+            yield return new WaitForSeconds(1f); // Check every second
         }
     }
 }

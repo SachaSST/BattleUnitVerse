@@ -590,7 +590,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BU split Real_0: 639184457327783420
+      BU split Real_1: 6105043690513871796
+      BU split Real_10: 4709805353187818383
+      BU split Real_11: 7642922832909419317
+      BU split Real_12: 6590947093792839562
+      BU split Real_13: -4566214553557778665
+      BU split Real_14: -30182829292814248
+      BU split Real_15: -8691068513839457748
+      BU split Real_16: -7827907573893798937
+      BU split Real_17: 4307042735169116852
+      BU split Real_2: -3829715991336539715
+      BU split Real_3: -84888483765571643
+      BU split Real_4: -2676806091950533240
+      BU split Real_5: 2692083811455477004
+      BU split Real_6: 2773815381758485743
+      BU split Real_7: 3874236348709750548
+      BU split Real_8: 4743770538031589578
+      BU split Real_9: 5946299126057692413
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
